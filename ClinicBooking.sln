@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicBooking.API", "Clinic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicBooking.DAL", "ClinicBooking.DAL\ClinicBooking.DAL.csproj", "{E2CA6BEB-45B7-479E-B5D4-5DB78C2BD56E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicBooking.BLL", "ClinicBooking.BLL\ClinicBooking.BLL.csproj", "{E9B557B0-3C66-468F-A3D8-1586A7C521D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicBooking.BLL", "ClinicBooking.BLL\ClinicBooking.BLL.csproj", "{E9B557B0-3C66-468F-A3D8-1586A7C521D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{579047A1-66BF-46E0-A8A1-8E8155711305}"
+	ProjectSection(SolutionItems) = preProject
+		TextFile1.txt = TextFile1.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
