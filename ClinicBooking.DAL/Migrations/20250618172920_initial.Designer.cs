@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicBooking.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250618155549_initial")]
+    [Migration("20250618172920_initial")]
     partial class initial
     {
         /// <inheritdoc />

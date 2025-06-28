@@ -1,4 +1,5 @@
 ﻿using ClinicBooking.DAL.Data.Entities;
+using ClinicBooking.DAL.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -20,7 +21,8 @@ namespace ClinicBooking.DAL.Data.Config
             builder.Property(x => x.Description).HasMaxLength(250).IsRequired(false);
 
             builder.HasOne(d=>d.User).WithOne(u=>u.Doctor)
-                .HasForeignKey<Doctor>(d=>d.UserId).OnDelete(DeleteBehavior.Restrict).IsRequired(); 
+                .HasForeignKey<Doctor>(d=>d.UserId).OnDelete(DeleteBehavior.Restrict).IsRequired();
+            builder.HasData(AppSeedData.GetDoctors());
         }
     }
 }

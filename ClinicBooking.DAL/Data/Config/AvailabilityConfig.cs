@@ -1,4 +1,5 @@
 ﻿using ClinicBooking.DAL.Data.Entities;
+using ClinicBooking.DAL.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.DAL.Data.Config
 {
-    internal class AvailabilityConfig : IEntityTypeConfiguration<Availability>
+    public class AvailabilityConfig : IEntityTypeConfiguration<Availability>
     {
         public void Configure(EntityTypeBuilder<Availability> builder)
         {
@@ -25,7 +26,7 @@ namespace ClinicBooking.DAL.Data.Config
             builder.HasOne(a => a.Doctor).WithMany(d => d.Availabilities)
               .HasForeignKey(a => a.DoctorId).OnDelete(DeleteBehavior.Restrict);
 
-            
+            builder.HasData(AppSeedData.GetAvailabilities());
 
 
         }

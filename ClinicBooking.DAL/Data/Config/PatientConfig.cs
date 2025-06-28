@@ -1,5 +1,6 @@
 ﻿using ClinicBooking.DAL.Data.Entities;
 using ClinicBooking.DAL.Data.Enums;
+using ClinicBooking.DAL.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.DAL.Data.Config
 {
-    internal class PatientConfig : IEntityTypeConfiguration<Patient>
+    public class PatientConfig : IEntityTypeConfiguration<Patient>
     {
         public void Configure(EntityTypeBuilder<Patient> builder)
         {
@@ -28,9 +29,9 @@ namespace ClinicBooking.DAL.Data.Config
 
             builder.Property(x => x.Gender).HasConversion<string>().IsRequired();
             builder.HasOne(p=>p.User).WithOne(u=>u.Patient)
-                .HasForeignKey<Patient>(p=>p.UserId).OnDelete(DeleteBehavior.Cascade);  
+                .HasForeignKey<Patient>(p=>p.UserId).OnDelete(DeleteBehavior.Cascade);
 
-
+         builder.HasData(AppSeedData.GetPatients());
         }
     }
 }

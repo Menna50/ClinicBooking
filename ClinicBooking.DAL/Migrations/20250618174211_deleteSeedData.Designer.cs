@@ -4,6 +4,7 @@ using ClinicBooking.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicBooking.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618174211_deleteSeedData")]
+    partial class deleteSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,48 +53,6 @@ namespace ClinicBooking.DAL.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("appointments", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppointmentDate = new DateTime(2025, 7, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 1,
-                            PatientId = 1,
-                            Status = "Scheduled"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppointmentDate = new DateTime(2025, 7, 2, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 1,
-                            PatientId = 2,
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppointmentDate = new DateTime(2025, 7, 3, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 2,
-                            PatientId = 1,
-                            Status = "Cancelled"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppointmentDate = new DateTime(2025, 7, 4, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 2,
-                            PatientId = 2,
-                            Status = "Scheduled"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppointmentDate = new DateTime(2025, 7, 5, 13, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 1,
-                            PatientId = 1,
-                            Status = "NoShow"
-                        });
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Availability", b =>
@@ -120,48 +81,6 @@ namespace ClinicBooking.DAL.Migrations
                     b.HasIndex("DoctorId");
 
                     b.ToTable("availabilities", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Day = "Monday",
-                            DoctorId = 1,
-                            EndTime = new TimeSpan(0, 12, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Day = "Wednesday",
-                            DoctorId = 1,
-                            EndTime = new TimeSpan(0, 13, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Day = "Tuesday",
-                            DoctorId = 2,
-                            EndTime = new TimeSpan(0, 14, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 11, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Day = "Thursday",
-                            DoctorId = 2,
-                            EndTime = new TimeSpan(0, 12, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Day = "Friday",
-                            DoctorId = 1,
-                            EndTime = new TimeSpan(0, 12, 30, 0, 0),
-                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
-                        });
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Doctor", b =>
@@ -195,24 +114,6 @@ namespace ClinicBooking.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("doctors", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Senior Doctor",
-                            Name = "Dr. Ahmed",
-                            Specialty = "Cardiology",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Specialist",
-                            Name = "Dr. Mona",
-                            Specialty = "Dermatology",
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Patient", b =>
@@ -254,28 +155,6 @@ namespace ClinicBooking.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("patients", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Age = 30,
-                            FName = "Ali",
-                            Gender = "Male",
-                            LName = "Hassan",
-                            Phone = "0100000001",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Age = 25,
-                            FName = "Sara",
-                            Gender = "Female",
-                            LName = "Youssef",
-                            Phone = "0100000002",
-                            UserId = 5
-                        });
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.User", b =>
@@ -309,48 +188,6 @@ namespace ClinicBooking.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0],
-                            Role = "Admin",
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0],
-                            Role = "Doctor",
-                            Username = "doctor1"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0],
-                            Role = "Doctor",
-                            Username = "doctor2"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0],
-                            Role = "Patient",
-                            Username = "patient1"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0],
-                            Role = "Patient",
-                            Username = "patient2"
-                        });
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Appointment", b =>

@@ -1,5 +1,6 @@
 ﻿using ClinicBooking.DAL.Data.Entities;
 using ClinicBooking.DAL.Data.Enums;
+using ClinicBooking.DAL.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.DAL.Data.Config
 {
-    internal class UserConfig : IEntityTypeConfiguration<User>
+    public class UserConfig : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
@@ -19,8 +20,8 @@ namespace ClinicBooking.DAL.Data.Config
             builder.Property(x => x.Username).HasMaxLength(50).IsRequired();
             builder.HasIndex(x => x.Username).IsUnique();
             builder.Property(x => x.Role).HasConversion<string>().IsRequired();
-           
-       
+
+            builder.HasData(AppSeedData.GetUsers());
 
 
         }

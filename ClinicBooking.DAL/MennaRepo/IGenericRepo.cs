@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClinicBooking.DAL.Data.Enums
+namespace ClinicBooking.DAL.MennaRepo
 {
-    public enum Gender
+    public interface IGenericRepo<T> 
     {
-        Male,
-        Female
+     public  Task< IEnumerable<T>> GetAllAsync();
     }
 }
