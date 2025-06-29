@@ -1,8 +1,7 @@
 ﻿using ClinicBooking.BLL.Services.Interfaces;
 using ClinicBooking.DAL.Data;
 using ClinicBooking.DAL.Data.Entities;
-using ClinicBooking.DAL.MennaRepo;
-using ClinicBooking.DAL.Repositories;
+using ClinicBooking.DAL.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

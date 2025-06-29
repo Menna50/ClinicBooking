@@ -12,11 +12,11 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<User>
             {
-                new User { Id = 1, Username = "admin", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Admin },
-                new User { Id = 2, Username = "doctor1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 3, Username = "doctor2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 4, Username = "patient1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient },
-                new User { Id = 5, Username = "patient2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient }
+                new User { Id = 1, UserName = "admin", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Admin },
+                new User { Id = 2, UserName = "doctor1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
+                new User { Id = 3, UserName = "doctor2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
+                new User { Id = 4, UserName = "patient1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient },
+                new User { Id = 5, UserName = "patient2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient }
             };
         }
 

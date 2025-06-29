@@ -1,6 +1,7 @@
 ﻿using ClinicBooking.BLL.Services.Implementations;
 using ClinicBooking.BLL.Services.Interfaces;
 using ClinicBooking.DAL.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace ClinicBooking.API.Controllers
         {
             _patientService = patientService;
         }
+        [Authorize]
         [HttpGet]
         
         public async Task<ActionResult<List<Patient>>> GetAll()

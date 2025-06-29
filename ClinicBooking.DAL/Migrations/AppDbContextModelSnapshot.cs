@@ -298,14 +298,14 @@ namespace ClinicBooking.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("users", (string)null);
@@ -317,7 +317,7 @@ namespace ClinicBooking.DAL.Migrations
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
                             Role = "Admin",
-                            Username = "admin"
+                            UserName = "admin"
                         },
                         new
                         {
@@ -325,7 +325,7 @@ namespace ClinicBooking.DAL.Migrations
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
                             Role = "Doctor",
-                            Username = "doctor1"
+                            UserName = "doctor1"
                         },
                         new
                         {
@@ -333,7 +333,7 @@ namespace ClinicBooking.DAL.Migrations
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
                             Role = "Doctor",
-                            Username = "doctor2"
+                            UserName = "doctor2"
                         },
                         new
                         {
@@ -341,7 +341,7 @@ namespace ClinicBooking.DAL.Migrations
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
                             Role = "Patient",
-                            Username = "patient1"
+                            UserName = "patient1"
                         },
                         new
                         {
@@ -349,7 +349,7 @@ namespace ClinicBooking.DAL.Migrations
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
                             Role = "Patient",
-                            Username = "patient2"
+                            UserName = "patient2"
                         });
                 });
 

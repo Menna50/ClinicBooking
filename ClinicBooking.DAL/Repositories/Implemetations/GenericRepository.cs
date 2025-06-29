@@ -1,4 +1,5 @@
 ﻿using ClinicBooking.DAL.Data;
+using ClinicBooking.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClinicBooking.DAL.Repositories
+namespace ClinicBooking.DAL.Repositories.Implemetations
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -26,7 +27,7 @@ namespace ClinicBooking.DAL.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync2()
         {
-          return await _context.Set<T>().ToListAsync();   
+            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
