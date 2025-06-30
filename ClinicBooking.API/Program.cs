@@ -31,7 +31,7 @@ namespace ClinicBooking.API
             builder.Services.AddSwaggerGen();
 
 
-
+            //AddDbContext
             builder.Services.AddDbContext<AppDbContext>(option =>
             option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -76,6 +76,11 @@ namespace ClinicBooking.API
                     policy.RequireRole("Admin"));
             });
 
+            //AutoMapper
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AllowNullCollections = true;
+            }, AppDomain.CurrentDomain.GetAssemblies());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -15,25 +15,26 @@ namespace ClinicBooking.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ITokenHelper _tokenHelper;
-private readonly IAuthService _authService;
+        private readonly IAuthService _authService;
         public AuthController(ITokenHelper tokenHelper, IAuthService authService)
         {
             _tokenHelper = tokenHelper;
-          _authService = authService;
+            _authService = authService;
         }
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto request)
         {
-         var user= await _authService.LoginAsync(request);
+            var user = await _authService.LoginAsync(request);
             if (user == null)
                 return BadRequest("Login Data is invalid");
-            return Ok(user);    
+            return Ok(user);
         }
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDto request)
         {
-         var res=_authService.RegisterAsync(request);
-            return Ok( res);
+            int x = 5;
+            var res = _authService.RegisterAsync(request);
+            return Ok(res);
         }
     }
 }

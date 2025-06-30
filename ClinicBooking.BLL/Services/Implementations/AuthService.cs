@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using ClinicBooking.API.Helpers;
 using ClinicBooking.BLL.Helper;
 using ClinicBooking.BLL.Services.Interfaces;
@@ -13,17 +14,24 @@ using ClinicBooking.Shared.Dtos;
 
 namespace ClinicBooking.BLL.Services.Implementations
 {
+    public class UserTest
+    {
+        public int Id { get; set; }
+    }
     public class AuthService : IAuthService
 
     {
 
         private readonly IUserRepo _userRepo;
-        private readonly ITokenHelper _jwtHelper; 
+        private readonly ITokenHelper _jwtHelper;
+        private readonly IMapper _mapper;
+
       
-        public AuthService(IUserRepo userRepo, ITokenHelper jwtHelper)
+        public AuthService(IUserRepo userRepo, ITokenHelper jwtHelper,IMapper mapper)
         {
             _userRepo = userRepo;
             _jwtHelper = jwtHelper;
+            _mapper = mapper;
            
         }
         public async Task<UserDto> LoginAsync(UserLoginDto dto)
@@ -55,16 +63,16 @@ namespace ClinicBooking.BLL.Services.Implementations
         public async Task<string> RegisterAsync(UserRegisterDto dto)
         {
             var passwordAndSalt = PasswordHasher.HashPassword(dto.Password);
-            User user = new User()
+            var user = new User()
             {
                 UserName = dto.UserName,
-                Role = dto.Role,
                 PasswordHash = passwordAndSalt.hashedPassword,
-                PasswordSalt = passwordAndSalt.salt
-
+                PasswordSalt = passwordAndSalt.salt,
+                Role = dto.Role
             };
+
             _userRepo.AddUser(user);
-            
+
             return "Done";
 
         }
