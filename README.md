@@ -29,3 +29,23 @@ Then it can be extended to support a proper role-based access control (RBAC) mod
 - Optional `Permissions` table (or Claims)
 
 This would follow enterprise best practices for large-scale systems.
+
+### 🧾 Doctor Account Creation & Password Handling
+
+When an Admin creates a new Doctor account, the frontend is currently responsible for generating a **random temporary password**.
+
+This password is not sent automatically by the system. Instead, the Admin is expected to **communicate it manually** to the Doctor (e.g., via email, phone, or other secure channels).
+
+This approach keeps the system simple and avoids dependencies on external email providers during early development stages.
+
+---
+
+### 🚀 Planned Enhancement: Email-Based Account Activation
+
+In future iterations of the system, we plan to implement a more secure and automated onboarding process that includes:
+
+- Sending an activation link or temporary password to the Doctor’s registered email.
+- Requiring the Doctor to set a new password on first login.
+- Automatically locking the account until the email is verified.
+
+This improvement aims to enhance security, streamline the onboarding process, and better reflect real-world production-ready practices.
