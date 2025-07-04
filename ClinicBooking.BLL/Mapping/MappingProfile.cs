@@ -15,8 +15,8 @@ namespace ClinicBooking.BLL.Mapping
        
         public MappingProfile()
         {
-            //     CreateMap<User, UserLoginDto>().ReverseMap();
-      //      CreateMap<UserRegisterDto, User>()
+            //     CreateMap<User, LoginRequestDto>().ReverseMap();
+      //      CreateMap<RegisterRequestDto, User>()
       //.ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
     //  .ForMember(dest => dest.PasswordSalt, opt => opt.Ignore());
 

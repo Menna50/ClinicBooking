@@ -20,23 +20,30 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
             _users =_context.Set<User>();
         }
 
-        public async Task AddUser(User user)
-        {
-           await _users.AddAsync(user);
-            _context.SaveChanges();
-            
-        }
-
-        public async Task< User> GetUserByAsync(Func<User,bool> predicate)
-        {
-            return _users.FirstOrDefault(predicate);
-        }
-
        
 
-        public async Task< IEnumerable<User>> GetUsersByAsync(Func<User,bool> predicate)
+
+        public async Task<User> GetUserByNameAsync(string name)
         {
-            return _users.Where(predicate);
+            return _users.FirstOrDefault(x => x.UserName == name);
         }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return _users.FirstOrDefault(x => x.Email == email);
+        }
+
+        public async Task<bool> UserExistByNameAsync(string name)
+        {
+            var t= await _users.AnyAsync(x => x.UserName == name);
+            return t;
+        }
+
+        public async Task<bool> UserExistByEmailAsync(string email)
+        {
+             var t = await _users.AnyAsync(x => x.Email == email);
+            return t;
+        }
+
     }
 }

@@ -8,6 +8,7 @@ namespace ClinicBooking.DAL.Data.Enums
 {
     public enum Role
     {
+        None,
         Admin,
         Patient,
         Doctor

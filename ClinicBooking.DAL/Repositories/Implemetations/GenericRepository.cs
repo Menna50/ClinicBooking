@@ -38,21 +38,22 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-        }
 
-        public void Update(T entity)
-        {
-            _dbSet.Update(entity);
-        }
-
-        public void Delete(T entity)
-        {
-            _dbSet.Remove(entity);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public Task UpdateAsync(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(T entity)
+        {
+            throw new NotImplementedException();
         }
     }
 

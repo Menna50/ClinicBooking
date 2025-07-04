@@ -10,8 +10,10 @@ namespace ClinicBooking.DAL.Repositories.Interfaces
     
     public interface IUserRepo
     {
-        public Task< User> GetUserByAsync(Func<User, bool> predicate);
-        public Task< IEnumerable<User>> GetUsersByAsync(Func<User, bool> predicate);
-        public Task AddUser(User user);
+    
+        public Task<User> GetUserByNameAsync(string name);
+        public Task<User> GetUserByEmailAsync(string Email);
+        public Task<bool> UserExistByNameAsync(string name);
+        public Task<bool> UserExistByEmailAsync(string name);
     }
 }

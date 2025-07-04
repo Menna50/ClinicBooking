@@ -1,8 +1,9 @@
 ﻿namespace ClinicBooking.Shared.Dtos
 {
-    public class UserLoginDto
+    public class LoginRequestDto
     {
-        public string UserName { get; set; }
+        public string Identifier { get; set; }
         public string Password { get; set; }
+       
     }
 }

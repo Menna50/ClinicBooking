@@ -4,6 +4,7 @@ using ClinicBooking.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicBooking.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630214645_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,12 +175,9 @@ namespace ClinicBooking.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Bio")
+                    b.Property<string>("Description")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<decimal>("ConsultationFee")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -203,8 +203,7 @@ namespace ClinicBooking.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Bio = "Senior Doctor",
-                            ConsultationFee = 1000m,
+                            Description = "Senior Doctor",
                             Name = "Dr. Ahmed",
                             SpecialtyId = 1,
                             UserId = 2
@@ -212,8 +211,7 @@ namespace ClinicBooking.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            Bio = "Specialist",
-                            ConsultationFee = 1000m,
+                            Description = "Specialist",
                             Name = "Dr. Mona",
                             SpecialtyId = 2,
                             UserId = 3
@@ -341,7 +339,7 @@ namespace ClinicBooking.DAL.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -350,10 +348,6 @@ namespace ClinicBooking.DAL.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -365,9 +359,6 @@ namespace ClinicBooking.DAL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -381,7 +372,6 @@ namespace ClinicBooking.DAL.Migrations
                             Email = "admin@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
-                            PhoneNumber = "123456789",
                             Role = "Admin",
                             UserName = "admin"
                         },
@@ -391,7 +381,6 @@ namespace ClinicBooking.DAL.Migrations
                             Email = "doctor1@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
-                            PhoneNumber = "123456789",
                             Role = "Doctor",
                             UserName = "doctor1"
                         },
@@ -401,7 +390,6 @@ namespace ClinicBooking.DAL.Migrations
                             Email = "doctor2@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
-                            PhoneNumber = "123456789",
                             Role = "Doctor",
                             UserName = "doctor2"
                         },
@@ -411,7 +399,6 @@ namespace ClinicBooking.DAL.Migrations
                             Email = "patient1@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
-                            PhoneNumber = "123456789",
                             Role = "Patient",
                             UserName = "patient1"
                         },
@@ -421,7 +408,6 @@ namespace ClinicBooking.DAL.Migrations
                             Email = "patient2@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
-                            PhoneNumber = "123456789",
                             Role = "Patient",
                             UserName = "patient2"
                         });

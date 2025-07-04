@@ -1,4 +1,4 @@
-﻿using ClinicBooking.DAL.Data.Entities;
+﻿using ClinicBooking.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.BLL.Services.Interfaces
 {
-    public interface IUserService
+    public interface IDoctorService
     {
-     
+        public Task AddDoctorAsync(DoctorRegisterDto doctorRegisterDto);
     }
 }

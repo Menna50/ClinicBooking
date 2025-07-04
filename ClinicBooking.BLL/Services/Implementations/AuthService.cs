@@ -5,12 +5,16 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Azure.Core;
 using ClinicBooking.API.Helpers;
 using ClinicBooking.BLL.Helper;
 using ClinicBooking.BLL.Services.Interfaces;
 using ClinicBooking.DAL.Data.Entities;
 using ClinicBooking.DAL.Repositories.Interfaces;
 using ClinicBooking.Shared.Dtos;
+using ClinicBooking.Shared.ErrorCodes;
+using ClinicBooking.Shared.Results;
+using Microsoft.AspNetCore.Http;
 
 namespace ClinicBooking.BLL.Services.Implementations
 {
@@ -25,60 +29,111 @@ namespace ClinicBooking.BLL.Services.Implementations
         private readonly IUserRepo _userRepo;
         private readonly ITokenHelper _jwtHelper;
         private readonly IMapper _mapper;
+        private readonly IGenericRepository<User> _genericRepo;
 
-      
-        public AuthService(IUserRepo userRepo, ITokenHelper jwtHelper,IMapper mapper)
+
+        public AuthService(IGenericRepository<User> genericRepo,IUserRepo userRepo, ITokenHelper jwtHelper, IMapper mapper)
         {
+            _genericRepo = genericRepo;
             _userRepo = userRepo;
             _jwtHelper = jwtHelper;
             _mapper = mapper;
-           
+
         }
-        public async Task<UserDto> LoginAsync(UserLoginDto dto)
+        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
         {
-            //Check if user exist
-            var user = await _userRepo.GetUserByAsync(u => u.UserName == dto.UserName);
-            if (user == null)
-                return null;
+            User? user;
 
-            if (!PasswordHasher.VerifyPassword(dto.Password, user.PasswordHash, user.PasswordSalt))
-                return null;
+            if (request.Identifier.Contains("@"))
+            {
+                user = await _userRepo.GetUserByEmailAsync(request.Identifier);
+            }
+            else
+            {
+                user = await _userRepo.GetUserByNameAsync(request.Identifier);
+            }
 
-            var token = _jwtHelper.GenerateToken(new JwtUserModel()
+            if (user == null || !PasswordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return null;
+            }
+
+            var tokenAndExpiresAt = _jwtHelper.GenerateToken(new JwtUserModel()
             {
                 Id = user.Id,
                 Username = user.UserName,
+                Email = user.Email,
                 Role = user.Role
             });
-            return new UserDto
+            var authResponseDto = new AuthResponseDto()
             {
                 Id = user.Id,
-                Username = user.UserName,
-                Token = token
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = user.Role.ToString(),
+                Token = tokenAndExpiresAt.token,
+                ExpiresAt = tokenAndExpiresAt.expriesAt
+
             };
-          
+            return authResponseDto;
 
         }
 
-        public async Task<string> RegisterAsync(UserRegisterDto dto)
+        public async Task<ResultT<AuthResponseDto>> RegisterAsync(RegisterRequestDto dto)
         {
-            var passwordAndSalt = PasswordHasher.HashPassword(dto.Password);
+            if (dto.Password != dto.ConfirtmPassword)
+            {
+                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,
+                    new Error(AuthErrorCodes.PasswordMismatch, "Password and confirm password is not the same "));
+                    
+            }
+            if (await _userRepo.UserExistByEmailAsync(dto.Email))
+            {
+                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,new Error(AuthErrorCodes.EmailAlreadyRegistered,
+                    "Email is already exist !"));
+            }
+            if (await _userRepo.UserExistByNameAsync(dto.UserName))
+            {
+                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,new Error(AuthErrorCodes.UsernameAlreadyTaken,
+                    "User name is already exist !"));
+            }
+
+
+            var passwordHashAndSalt = PasswordHasher.HashPassword(dto.Password);
             var user = new User()
             {
                 UserName = dto.UserName,
-                PasswordHash = passwordAndSalt.hashedPassword,
-                PasswordSalt = passwordAndSalt.salt,
+                Email = dto.Email,
+                PasswordHash = passwordHashAndSalt.hashedPassword,
+                PasswordSalt = passwordHashAndSalt.salt,
                 Role = dto.Role
             };
+            await _genericRepo.AddAsync(user);
+            var tokenAndExpiresAt = _jwtHelper.GenerateToken(new JwtUserModel()
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Role = user.Role
+            });
+            var authResponseDto = new AuthResponseDto()
+            {
+                Id = user.Id,
+                UserName = dto.UserName,
+                Email = dto.Email,
+                Role = dto.Role.ToString(),
+                Token = tokenAndExpiresAt.token,
+                ExpiresAt = tokenAndExpiresAt.expriesAt
 
-            _userRepo.AddUser(user);
+            };
+            return ResultT<AuthResponseDto>.Success(StatusCodes.Status201Created, authResponseDto);
 
-            return "Done";
+
 
         }
 
-       
 
-       
+
+
     }
 }

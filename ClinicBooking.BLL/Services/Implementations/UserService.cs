@@ -17,14 +17,6 @@ namespace ClinicBooking.BLL.Services.Implementations
             _userRepo= userRepo;
             
         }
-        public async Task< User >GetUserByAsync(Func<User, bool> predicate)
-        {
-            return await _userRepo.GetUserByAsync(predicate);
-        }
-
-        public async Task< IEnumerable<User>> GetUsersByAsync(Func<User, bool> predicate)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

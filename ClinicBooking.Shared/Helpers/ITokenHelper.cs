@@ -4,7 +4,7 @@ namespace ClinicBooking.API.Helpers
 {
     public interface ITokenHelper
     {
-       string GenerateToken(
+       (string token,DateTime expriesAt) GenerateToken(
           JwtUserModel jwtUserModel);
     }
 }

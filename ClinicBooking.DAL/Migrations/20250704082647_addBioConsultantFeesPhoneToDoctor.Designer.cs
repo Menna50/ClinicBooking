@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicBooking.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250628211732_initial")]
-    partial class initial
+    [Migration("20250704082647_addBioConsultantFeesPhoneToDoctor")]
+    partial class addBioConsultantFeesPhoneToDoctor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,24 +175,27 @@ namespace ClinicBooking.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Bio")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<decimal>("ConsultationFee")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Specialty")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("SpecialtyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SpecialtyId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -203,17 +206,19 @@ namespace ClinicBooking.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Senior Doctor",
+                            Bio = "Senior Doctor",
+                            ConsultationFee = 1000m,
                             Name = "Dr. Ahmed",
-                            Specialty = "Cardiology",
+                            SpecialtyId = 1,
                             UserId = 2
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Specialist",
+                            Bio = "Specialist",
+                            ConsultationFee = 1000m,
                             Name = "Dr. Mona",
-                            Specialty = "Dermatology",
+                            SpecialtyId = 2,
                             UserId = 3
                         });
                 });
@@ -281,6 +286,54 @@ namespace ClinicBooking.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Specialty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("specialities", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Cardiology"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Dermatology"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Pediatrics"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Neurology"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Orthopedics"
+                        });
+                });
+
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -289,6 +342,10 @@ namespace ClinicBooking.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -296,6 +353,10 @@ namespace ClinicBooking.DAL.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -308,6 +369,9 @@ namespace ClinicBooking.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("UserName")
                         .IsUnique();
 
@@ -317,40 +381,50 @@ namespace ClinicBooking.DAL.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "admin@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
+                            PhoneNumber = "123456789",
                             Role = "Admin",
                             UserName = "admin"
                         },
                         new
                         {
                             Id = 2,
+                            Email = "doctor1@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
+                            PhoneNumber = "123456789",
                             Role = "Doctor",
                             UserName = "doctor1"
                         },
                         new
                         {
                             Id = 3,
+                            Email = "doctor2@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
+                            PhoneNumber = "123456789",
                             Role = "Doctor",
                             UserName = "doctor2"
                         },
                         new
                         {
                             Id = 4,
+                            Email = "patient1@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
+                            PhoneNumber = "123456789",
                             Role = "Patient",
                             UserName = "patient1"
                         },
                         new
                         {
                             Id = 5,
+                            Email = "patient2@gmail.com",
                             PasswordHash = new byte[0],
                             PasswordSalt = new byte[0],
+                            PhoneNumber = "123456789",
                             Role = "Patient",
                             UserName = "patient2"
                         });
@@ -388,11 +462,19 @@ namespace ClinicBooking.DAL.Migrations
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Doctor", b =>
                 {
+                    b.HasOne("ClinicBooking.DAL.Data.Entities.Specialty", "Specialty")
+                        .WithMany("Doctors")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ClinicBooking.DAL.Data.Entities.User", "User")
                         .WithOne("Doctor")
                         .HasForeignKey("ClinicBooking.DAL.Data.Entities.Doctor", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Specialty");
 
                     b.Navigation("User");
                 });
@@ -418,6 +500,11 @@ namespace ClinicBooking.DAL.Migrations
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Patient", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.Specialty", b =>
+                {
+                    b.Navigation("Doctors");
                 });
 
             modelBuilder.Entity("ClinicBooking.DAL.Data.Entities.User", b =>

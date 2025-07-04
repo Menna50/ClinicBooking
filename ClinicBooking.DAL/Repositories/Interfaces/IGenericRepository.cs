@@ -12,8 +12,8 @@ namespace ClinicBooking.DAL.Repositories.Interfaces
         public Task<IEnumerable<T>> GetAllAsync();
         public Task<T> GetByIdAsync(int id);
         public Task AddAsync(T entity);
-        public void Update(T entity);
-        public void Delete(T entity);
+        public  Task UpdateAsync(T entity);
+        public Task DeleteAsync(T entity);
         public Task<bool> SaveChangesAsync();
 
 

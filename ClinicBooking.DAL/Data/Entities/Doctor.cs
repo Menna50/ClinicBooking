@@ -10,8 +10,10 @@ namespace ClinicBooking.DAL.Data.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Specialty { get; set; }
-        public string Description { get; set; }
+        public int SpecialtyId { get; set; }
+        public Specialty Specialty { get; set; }
+        public string Bio { get; set; }
+        public decimal ConsultationFee { get; set; }
         public int UserId { set; get; }
         public User User { set; get; }
 

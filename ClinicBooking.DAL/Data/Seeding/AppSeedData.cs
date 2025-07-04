@@ -12,11 +12,11 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<User>
             {
-                new User { Id = 1, UserName = "admin", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Admin },
-                new User { Id = 2, UserName = "doctor1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 3, UserName = "doctor2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 4, UserName = "patient1", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient },
-                new User { Id = 5, UserName = "patient2", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient }
+                new User { Id = 1, UserName = "admin",Email= "admin@gmail.com",PhoneNumber="123456789", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Admin },
+                new User { Id = 2, UserName = "doctor1",Email= "doctor1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
+                new User { Id = 3, UserName = "doctor2",Email= "doctor2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
+                new User { Id = 4, UserName = "patient1",Email= "patient1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient },
+                new User { Id = 5, UserName = "patient2",Email= "patient2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient }
             };
         }
 
@@ -24,8 +24,8 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<Doctor>
             {
-                new Doctor { Id = 1, Name = "Dr. Ahmed", Specialty = "Cardiology", Description = "Senior Doctor", UserId = 2 },
-                new Doctor { Id = 2, Name = "Dr. Mona", Specialty = "Dermatology", Description = "Specialist", UserId = 3 }
+                new Doctor { Id = 1, Name = "Dr. Ahmed", SpecialtyId = 1, Bio = "Senior Doctor",ConsultationFee=1000, UserId = 2 },
+                new Doctor { Id = 2, Name = "Dr. Mona", SpecialtyId = 2, Bio = "Specialist", ConsultationFee=1000,UserId = 3 }
             };
         }
 
@@ -49,7 +49,17 @@ namespace ClinicBooking.DAL.Seeding
                 new Availability { Id = 5, DoctorId = 1, Day = DayOfWeek.Friday, StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(12, 30, 0) }
             };
         }
-
+        public static List<Specialty> GetSpecialties()
+        {
+            return new List<Specialty>
+            {
+            new Specialty { Id = 1, Name = "Cardiology" },
+            new Specialty { Id = 2, Name = "Dermatology" },
+            new Specialty { Id = 3, Name = "Pediatrics" },
+            new Specialty { Id = 4, Name = "Neurology" },
+            new Specialty { Id = 5, Name = "Orthopedics" }
+            };
+        }
         public static IEnumerable<Appointment> GetAppointments()
         {
             return new List<Appointment>

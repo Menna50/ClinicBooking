@@ -14,12 +14,27 @@ namespace ClinicBooking.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "specialities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_specialities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -36,13 +51,19 @@ namespace ClinicBooking.DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Specialty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SpecialtyId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_doctors_specialities_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "specialities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_doctors_users_UserId",
                         column: x => x.UserId,
@@ -126,24 +147,36 @@ namespace ClinicBooking.DAL.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "users",
-                columns: new[] { "Id", "PasswordHash", "PasswordSalt", "Role", "UserName" },
+                table: "specialities",
+                columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, new byte[0], new byte[0], "Admin", "admin" },
-                    { 2, new byte[0], new byte[0], "Doctor", "doctor1" },
-                    { 3, new byte[0], new byte[0], "Doctor", "doctor2" },
-                    { 4, new byte[0], new byte[0], "Patient", "patient1" },
-                    { 5, new byte[0], new byte[0], "Patient", "patient2" }
+                    { 1, null, "Cardiology" },
+                    { 2, null, "Dermatology" },
+                    { 3, null, "Pediatrics" },
+                    { 4, null, "Neurology" },
+                    { 5, null, "Orthopedics" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "users",
+                columns: new[] { "Id", "Email", "PasswordHash", "PasswordSalt", "Role", "UserName" },
+                values: new object[,]
+                {
+                    { 1, "admin@gmail.com", new byte[0], new byte[0], "Admin", "admin" },
+                    { 2, "doctor1@gmail.com", new byte[0], new byte[0], "Doctor", "doctor1" },
+                    { 3, "doctor2@gmail.com", new byte[0], new byte[0], "Doctor", "doctor2" },
+                    { 4, "patient1@gmail.com", new byte[0], new byte[0], "Patient", "patient1" },
+                    { 5, "patient2@gmail.com", new byte[0], new byte[0], "Patient", "patient2" }
                 });
 
             migrationBuilder.InsertData(
                 table: "doctors",
-                columns: new[] { "Id", "Description", "Name", "Specialty", "UserId" },
+                columns: new[] { "Id", "Description", "Name", "SpecialtyId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Senior Doctor", "Dr. Ahmed", "Cardiology", 2 },
-                    { 2, "Specialist", "Dr. Mona", "Dermatology", 3 }
+                    { 1, "Senior Doctor", "Dr. Ahmed", 1, 2 },
+                    { 2, "Specialist", "Dr. Mona", 2, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -195,6 +228,11 @@ namespace ClinicBooking.DAL.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_doctors_SpecialtyId",
+                table: "doctors",
+                column: "SpecialtyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_doctors_UserId",
                 table: "doctors",
                 column: "UserId",
@@ -227,6 +265,9 @@ namespace ClinicBooking.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "doctors");
+
+            migrationBuilder.DropTable(
+                name: "specialities");
 
             migrationBuilder.DropTable(
                 name: "users");

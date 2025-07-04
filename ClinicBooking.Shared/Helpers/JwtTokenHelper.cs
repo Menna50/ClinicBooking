@@ -17,29 +17,31 @@ namespace ClinicBooking.API.Helpers
             _jwtSettings = jwtSettings;
         }
 
-        public string GenerateToken(JwtUserModel jwtUserModel)
+        public (string token, DateTime expriesAt) GenerateToken(JwtUserModel jwtUserModel)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SigningKey));
             Claim[] claims = new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier,jwtUserModel.Id.ToString()),
                  new Claim(ClaimTypes.Name,jwtUserModel.Username),
+                   new Claim(ClaimTypes.Email,jwtUserModel.Email),
                   new Claim(ClaimTypes.Role,jwtUserModel.Role.ToString()),
 
             };
+            var expireAt = DateTime.Now.AddMinutes(_jwtSettings.LifeTime);
             JwtSecurityToken token = new JwtSecurityToken
             (
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.LifeTime),
+                expires: expireAt,
                 signingCredentials: new SigningCredentials(key,
                 SecurityAlgorithms.HmacSha256),
-                claims:claims
+                claims: claims
 
             );
             var tokenHandler = new JwtSecurityTokenHandler();
             var accessToken = tokenHandler.WriteToken(token);
-            return accessToken;
+            return (accessToken, expireAt);
         }
     }
 }

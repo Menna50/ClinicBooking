@@ -17,12 +17,15 @@ namespace ClinicBooking.DAL.Data.Config
             builder.ToTable("doctors");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Specialty).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Description).HasMaxLength(250).IsRequired(false);
+            builder.Property(x => x.Bio).HasMaxLength(250).IsRequired(false);
 
             builder.HasOne(d=>d.User).WithOne(u=>u.Doctor)
-                .HasForeignKey<Doctor>(d=>d.UserId).OnDelete(DeleteBehavior.Restrict).IsRequired();
+                .HasForeignKey<Doctor>(d=>d.UserId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired();
             builder.HasData(AppSeedData.GetDoctors());
+            //speciality Rel
+            builder.HasOne(d => d.Specialty).WithMany(s => s.Doctors)
+                .HasForeignKey(d => d.SpecialtyId);
         }
     }
 }

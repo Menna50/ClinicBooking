@@ -19,6 +19,8 @@ namespace ClinicBooking.DAL.Data.Config
             builder.HasKey(x => x.Id);
             builder.Property(x => x.UserName).HasMaxLength(50).IsRequired();
             builder.HasIndex(x => x.UserName).IsUnique();
+            builder.HasIndex(x => x.Email).IsUnique();
+            builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.Role).HasConversion<string>().IsRequired();
 
             builder.HasData(AppSeedData.GetUsers());

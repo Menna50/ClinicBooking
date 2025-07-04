@@ -13,6 +13,7 @@ using ClinicBooking.DAL.Repositories.Implemetations;
 using ClinicBooking.API.Configurations;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ClinicBooking.API.Middlewares;
 
 namespace ClinicBooking.API
 {
@@ -60,15 +61,17 @@ namespace ClinicBooking.API
             //RegisterRepos !!
             builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
             builder.Services.AddScoped<IGenericRepository<Patient>, GenericRepository<Patient>>();
+            builder.Services.AddScoped<IGenericRepository<Doctor>, GenericRepository<Doctor>>();
 
             builder.Services.AddScoped<IUserRepo, UserRepo>();
             //Register Serivice 
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
 
 
 
-
+            builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
             builder.Services.AddAuthorization(options =>
             {
@@ -89,6 +92,8 @@ namespace ClinicBooking.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+             app.UseExceptionHandlinMiddleware();
+      //      app.UseMiddleware<MennaExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

@@ -22,7 +22,7 @@ namespace ClinicBooking.API.Controllers
             _authService = authService;
         }
         [HttpPost]
-        public async Task<IActionResult> Login(UserLoginDto request)
+        public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var user = await _authService.LoginAsync(request);
             if (user == null)
@@ -30,11 +30,14 @@ namespace ClinicBooking.API.Controllers
             return Ok(user);
         }
         [HttpPost]
-        public async Task<IActionResult> Register(UserRegisterDto request)
+        public async Task<IActionResult> Register(RegisterRequestDto request)
         {
-            int x = 5;
-            var res = _authService.RegisterAsync(request);
-            return Ok(res);
+            throw new NotImplementedException();
+          
+            var res =  await _authService.RegisterAsync(request);
+            if (res.IsSuccess)
+                return StatusCode(res.StatusCode, res.Data);
+            return StatusCode(res.StatusCode, res.Error);
         }
     }
 }

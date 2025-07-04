@@ -14,6 +14,7 @@ namespace ClinicBooking.DAL.Data
         public DbSet<User> Users { get; set; }
         public DbSet<User> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Specialty> Specialties { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
         {
