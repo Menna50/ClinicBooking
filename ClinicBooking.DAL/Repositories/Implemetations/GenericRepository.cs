@@ -1,6 +1,7 @@
 ﻿using ClinicBooking.DAL.Data;
 using ClinicBooking.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
     {
         private readonly AppDbContext _context;
         private readonly DbSet<T> _dbSet;
+        private IDbContextTransaction _transaction;
 
         public GenericRepository(AppDbContext context)
         {
@@ -23,11 +25,6 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync2()
-        {
-            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -51,9 +48,34 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+        }
+        public async Task BeginTransactionAsync()
+        {
+            if (_transaction == null)
+                _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
         }
     }
 

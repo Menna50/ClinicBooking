@@ -19,7 +19,6 @@ namespace ClinicBooking.DAL.Data.Config
             builder.HasKey(x => x.Id);
             builder.Property(x => x.FName).HasMaxLength(50).IsRequired();
             builder.Property(x => x.LName).HasMaxLength(50).IsRequired();
-            builder.Property(x => x.Phone).HasMaxLength(15).IsRequired();
             
           
             

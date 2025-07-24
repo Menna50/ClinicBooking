@@ -25,12 +25,12 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
 
         public async Task<User> GetUserByNameAsync(string name)
         {
-            return _users.FirstOrDefault(x => x.UserName == name);
+            return await _users.FirstOrDefaultAsync(x => x.UserName == name);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return _users.FirstOrDefault(x => x.Email == email);
+            return await _users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<bool> UserExistByNameAsync(string name)

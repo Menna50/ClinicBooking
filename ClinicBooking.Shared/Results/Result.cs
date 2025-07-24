@@ -10,7 +10,6 @@ namespace ClinicBooking.Shared.Results
     public class Result
     {
         public bool IsSuccess { get; }
-        public bool IsFailure { get; } 
         public Error? Error { get; } 
         public int StatusCode { get; }
         //success Case
@@ -30,7 +29,6 @@ namespace ClinicBooking.Shared.Results
             //     throw new InvalidOperationException("Failure result must have an error status code (>= 400).");
             // }
             IsSuccess = isSuccess;
-            IsFailure = !isSuccess;
             StatusCode = statusCode;
             Error = error ;
         }

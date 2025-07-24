@@ -1,13 +1,15 @@
-﻿using ClinicBooking.BLL.Services.Implementations;
-using ClinicBooking.BLL.Services.Interfaces;
-using ClinicBooking.DAL.Data.Entities;
+﻿using ClinicBooking.BLL.Services.Interfaces;
+using ClinicBooking.Shared.Dtos;
+using ClinicBooking.Shared.ErrorCodes;
+using ClinicBooking.Shared.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -16,14 +18,37 @@ namespace ClinicBooking.API.Controllers
         {
             _patientService = patientService;
         }
-        [Authorize]
         [HttpGet]
-        
-        public async Task<ActionResult<List<Patient>>> GetAll()
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GeProfile()
         {
-            var patients = await _patientService.GetAllAsync();
-            return  Ok(patients);
+
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (currentUserIdClaim == null || !int.TryParse(currentUserIdClaim.Value, out int currentUserId))
+            {
+                return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
+            }
+            var res = await _patientService.GetProfileAsync(currentUserId);
+            if (!res.IsSuccess)
+                return StatusCode(res.StatusCode, res.Error);
+            return StatusCode(res.StatusCode, res.Data);
         }
+        [HttpPut]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> Update(UpdatePatientProfileDto dto)
+        {
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (currentUserIdClaim == null || !int.TryParse(currentUserIdClaim.Value, out int currentUserId))
+            {
+                return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
+            }
+            var res = await _patientService.UpdateAsync(dto, currentUserId);
+            if (!res.IsSuccess)
+                return StatusCode(res.StatusCode, res.Error);
+            return StatusCode(res.StatusCode);
+
+        }
+
 
     }
 }

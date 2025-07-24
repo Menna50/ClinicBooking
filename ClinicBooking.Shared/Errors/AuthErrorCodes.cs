@@ -10,6 +10,8 @@ namespace ClinicBooking.Shared.ErrorCodes
         public const string InvalidCredentials = "AUTH.INVALID_CREDENTIALS";
         public const string UserNotFound = "AUTH.USER_NOT_FOUND";
         public const string IncorrectPassword = "AUTH.INCORRECT_PASSWORD";
+        public const string IncorrectLoginData = "AUTH.INCORRECT_LOGIN_DATA";
+
         public const string UserAlreadyExists = "AUTH.USER_ALREADY_EXISTS";
         public const string EmailAlreadyRegistered = "AUTH.EMAIL_ALREADY_REGISTERED"; // مثال جديد
         public const string UsernameAlreadyTaken = "AUTH.USERNAME_ALREADY_TAKEN";   // مثال جديد
@@ -18,5 +20,7 @@ namespace ClinicBooking.Shared.ErrorCodes
         public const string RoleNotFound = "AUTH.ROLE_NOT_FOUND";
         public const string UserNotInRole = "AUTH.USER_NOT_IN_ROLE";
         public const string GeneralAuthError = "AUTH.GENERAL_ERROR";
+
+        public const string InvalidToken = "AUTH.INVALID_TOKEN"; 
     }
 }

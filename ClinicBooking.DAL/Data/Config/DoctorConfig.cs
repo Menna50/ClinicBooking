@@ -16,7 +16,6 @@ namespace ClinicBooking.DAL.Data.Config
         {
             builder.ToTable("doctors");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
             builder.Property(x => x.Bio).HasMaxLength(250).IsRequired(false);
 
             builder.HasOne(d=>d.User).WithOne(u=>u.Doctor)

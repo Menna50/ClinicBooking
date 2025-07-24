@@ -16,7 +16,7 @@ namespace ClinicBooking.DAL.Data.Entities
         public byte[] PasswordSalt { get; set; }
         public string PhoneNumber { get; set; }
 
-        public Role Role { get; set; }
+        public Roles Role { get; set; }
 
         public Patient Patient { get; set; }  // Optional
         public Doctor Doctor { get; set; }// Optional

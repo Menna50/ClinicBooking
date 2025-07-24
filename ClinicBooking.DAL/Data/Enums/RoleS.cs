@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.DAL.Data.Enums
 {
-    public enum Role
+    public enum Roles
     {
         None,
         Admin,
-        Patient,
-        Doctor
+        Doctor,
+        Patient
+       
     }
 }

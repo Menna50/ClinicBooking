@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.DAL.Data.Entities
 {
+   
     public class Appointment
     {
         public int Id { get; set; }

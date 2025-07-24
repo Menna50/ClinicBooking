@@ -14,8 +14,13 @@ namespace ClinicBooking.DAL.Data.Entities
         public Doctor Doctor { get; set; }
 
         public DayOfWeek Day { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+
+        public int SlotDurationMinutes { get; set; }
+        public DateTime? EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
     }
+
 
 }

@@ -18,10 +18,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ClinicBooking.BLL.Services.Implementations
 {
-    public class UserTest
-    {
-        public int Id { get; set; }
-    }
+  
     public class AuthService : IAuthService
 
     {
@@ -40,22 +37,21 @@ namespace ClinicBooking.BLL.Services.Implementations
             _mapper = mapper;
 
         }
-        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
+        private async Task<User?> FindUserByIdentifierAsync(string identifier)
         {
-            User? user;
+            return identifier.Contains("@")
+                ? await _userRepo.GetUserByEmailAsync(identifier)
+                : await _userRepo.GetUserByNameAsync(identifier);
+        }
+        public async Task<ResultT<AuthResponseDto>> LoginAsync(LoginRequestDto request)
+        {
+            User? user = await FindUserByIdentifierAsync(request.Identifier);
 
-            if (request.Identifier.Contains("@"))
-            {
-                user = await _userRepo.GetUserByEmailAsync(request.Identifier);
-            }
-            else
-            {
-                user = await _userRepo.GetUserByNameAsync(request.Identifier);
-            }
 
             if (user == null || !PasswordHasher.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
             {
-                return null;
+                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,
+                    new Error(AuthErrorCodes.IncorrectLoginData,"Login data is incorrect"));
             }
 
             var tokenAndExpiresAt = _jwtHelper.GenerateToken(new JwtUserModel()
@@ -75,40 +71,25 @@ namespace ClinicBooking.BLL.Services.Implementations
                 ExpiresAt = tokenAndExpiresAt.expriesAt
 
             };
-            return authResponseDto;
+             return ResultT<AuthResponseDto>.Success(StatusCodes.Status200OK,authResponseDto);
 
         }
 
         public async Task<ResultT<AuthResponseDto>> RegisterAsync(RegisterRequestDto dto)
         {
-            if (dto.Password != dto.ConfirtmPassword)
-            {
-                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,
-                    new Error(AuthErrorCodes.PasswordMismatch, "Password and confirm password is not the same "));
-                    
-            }
-            if (await _userRepo.UserExistByEmailAsync(dto.Email))
-            {
-                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,new Error(AuthErrorCodes.EmailAlreadyRegistered,
-                    "Email is already exist !"));
-            }
-            if (await _userRepo.UserExistByNameAsync(dto.UserName))
-            {
-                return ResultT<AuthResponseDto>.Failure(StatusCodes.Status400BadRequest,new Error(AuthErrorCodes.UsernameAlreadyTaken,
-                    "User name is already exist !"));
-            }
-
-
-            var passwordHashAndSalt = PasswordHasher.HashPassword(dto.Password);
+           
+              var passwordHashAndSalt = PasswordHasher.HashPassword(dto.Password);
             var user = new User()
             {
                 UserName = dto.UserName,
                 Email = dto.Email,
+                PhoneNumber=dto.PhoneNumber,
                 PasswordHash = passwordHashAndSalt.hashedPassword,
                 PasswordSalt = passwordHashAndSalt.salt,
                 Role = dto.Role
             };
             await _genericRepo.AddAsync(user);
+         await   _genericRepo.SaveChangesAsync();
             var tokenAndExpiresAt = _jwtHelper.GenerateToken(new JwtUserModel()
             {
                 Id = user.Id,

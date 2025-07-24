@@ -11,7 +11,7 @@ namespace ClinicBooking.Shared.Results
     {
        public T Data { get; }
         //Success case
-        private ResultT(bool isSuccess, int statusCode,Error error, T data) : base(isSuccess, statusCode,error)
+        private ResultT(bool isSuccess, int statusCode, T data) : base(isSuccess, statusCode,null)
         {
             Data = data;
         }
@@ -21,7 +21,7 @@ namespace ClinicBooking.Shared.Results
            
         }
        
-        public static ResultT<T> Success(int statusCode,T data) => new ResultT<T>(true,statusCode,null);
+        public static ResultT<T> Success(int statusCode,T data) => new ResultT<T>(true,statusCode, data);
         public static ResultT<T> Failure(int statusCode,Error error) => new ResultT<T>(false,statusCode,error);
 
     }

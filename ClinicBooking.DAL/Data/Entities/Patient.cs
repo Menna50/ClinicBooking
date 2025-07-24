@@ -14,8 +14,6 @@ namespace ClinicBooking.DAL.Data.Entities
         public string LName { get; set; }
         public int Age { get; set; }
         public Gender Gender { get; set; }
-        public string Phone { get; set; }
-
         public int UserId { get; set; }
         public User User { get; set; }
 

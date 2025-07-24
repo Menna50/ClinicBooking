@@ -12,11 +12,11 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<User>
             {
-                new User { Id = 1, UserName = "admin",Email= "admin@gmail.com",PhoneNumber="123456789", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Admin },
-                new User { Id = 2, UserName = "doctor1",Email= "doctor1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 3, UserName = "doctor2",Email= "doctor2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Doctor },
-                new User { Id = 4, UserName = "patient1",Email= "patient1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient },
-                new User { Id = 5, UserName = "patient2",Email= "patient2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Role.Patient }
+                new User { Id = 1, UserName = "admin",Email= "admin@gmail.com",PhoneNumber="123456789", PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Roles.Admin },
+                new User { Id = 2, UserName = "doctor1",Email= "doctor1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Roles.Doctor },
+                new User { Id = 3, UserName = "doctor2",Email= "doctor2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Roles.Doctor },
+                new User { Id = 4, UserName = "patient1",Email= "patient1@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Roles.Patient },
+                new User { Id = 5, UserName = "patient2",Email= "patient2@gmail.com", PhoneNumber="123456789",PasswordHash = new byte[] {}, PasswordSalt = new byte[] {}, Role = Roles.Patient }
             };
         }
 
@@ -24,8 +24,8 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<Doctor>
             {
-                new Doctor { Id = 1, Name = "Dr. Ahmed", SpecialtyId = 1, Bio = "Senior Doctor",ConsultationFee=1000, UserId = 2 },
-                new Doctor { Id = 2, Name = "Dr. Mona", SpecialtyId = 2, Bio = "Specialist", ConsultationFee=1000,UserId = 3 }
+                new Doctor { Id = 1, Name="doctor1", SpecialtyId = 1, Bio = "Senior Doctor",ConsultationFee=1000, UserId = 2 },
+                new Doctor { Id = 2, Name="doctor2",SpecialtyId = 2, Bio = "Specialist", ConsultationFee=1000,UserId = 3 }
             };
         }
 
@@ -33,8 +33,8 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<Patient>
             {
-                new Patient { Id = 1, FName = "Ali", LName = "Hassan", Age = 30, Gender = Gender.Male, Phone = "0100000001", UserId = 4 },
-                new Patient { Id = 2, FName = "Sara", LName = "Youssef", Age = 25, Gender = Gender.Female, Phone = "0100000002", UserId = 5 },
+                new Patient { Id = 1, FName = "Ali", LName = "Hassan", Age = 30, Gender = Gender.Male,UserId = 4 },
+                new Patient { Id = 2, FName = "Sara", LName = "Youssef", Age = 25, Gender = Gender.Female,UserId = 5 },
                 };
         }
 
@@ -42,11 +42,11 @@ namespace ClinicBooking.DAL.Seeding
         {
             return new List<Availability>
             {
-                new Availability { Id = 1, DoctorId = 1, Day = DayOfWeek.Monday, StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(12, 0, 0) },
-                new Availability { Id = 2, DoctorId = 1, Day = DayOfWeek.Wednesday, StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(13, 0, 0) },
-                new Availability { Id = 3, DoctorId = 2, Day = DayOfWeek.Tuesday, StartTime = new TimeSpan(11, 0, 0), EndTime = new TimeSpan(14, 0, 0) },
-                new Availability { Id = 4, DoctorId = 2, Day = DayOfWeek.Thursday, StartTime = new TimeSpan(9, 0, 0), EndTime = new TimeSpan(12, 0, 0) },
-                new Availability { Id = 5, DoctorId = 1, Day = DayOfWeek.Friday, StartTime = new TimeSpan(10, 0, 0), EndTime = new TimeSpan(12, 30, 0) }
+                new Availability { Id = 1, DoctorId = 1, Day = DayOfWeek.Monday, StartTime = new TimeOnly(9, 0, 0), EndTime = new TimeOnly(12, 0, 0) },
+                new Availability { Id = 2, DoctorId = 1, Day = DayOfWeek.Wednesday, StartTime = new TimeOnly(10, 0, 0), EndTime = new TimeOnly(13, 0, 0) },
+                new Availability { Id = 3, DoctorId = 2, Day = DayOfWeek.Tuesday, StartTime = new TimeOnly(11, 0, 0), EndTime = new TimeOnly(14, 0, 0) },
+                new Availability { Id = 4, DoctorId = 2, Day = DayOfWeek.Thursday, StartTime = new TimeOnly(9, 0, 0), EndTime = new TimeOnly(12, 0, 0) },
+                new Availability { Id = 5, DoctorId = 1, Day = DayOfWeek.Friday, StartTime = new TimeOnly(10, 0, 0), EndTime = new TimeOnly(12, 30, 0) }
             };
         }
         public static List<Specialty> GetSpecialties()

@@ -109,10 +109,19 @@ namespace ClinicBooking.DAL.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("EndTime")
+                    b.Property<DateTime?>("EffectiveFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EffectiveTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<TimeSpan>("StartTime")
+                    b.Property<int>("SlotDurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
@@ -127,40 +136,45 @@ namespace ClinicBooking.DAL.Migrations
                             Id = 1,
                             Day = "Monday",
                             DoctorId = 1,
-                            EndTime = new TimeSpan(0, 12, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
+                            EndTime = new TimeOnly(12, 0, 0),
+                            SlotDurationMinutes = 0,
+                            StartTime = new TimeOnly(9, 0, 0)
                         },
                         new
                         {
                             Id = 2,
                             Day = "Wednesday",
                             DoctorId = 1,
-                            EndTime = new TimeSpan(0, 13, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
+                            EndTime = new TimeOnly(13, 0, 0),
+                            SlotDurationMinutes = 0,
+                            StartTime = new TimeOnly(10, 0, 0)
                         },
                         new
                         {
                             Id = 3,
                             Day = "Tuesday",
                             DoctorId = 2,
-                            EndTime = new TimeSpan(0, 14, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 11, 0, 0, 0)
+                            EndTime = new TimeOnly(14, 0, 0),
+                            SlotDurationMinutes = 0,
+                            StartTime = new TimeOnly(11, 0, 0)
                         },
                         new
                         {
                             Id = 4,
                             Day = "Thursday",
                             DoctorId = 2,
-                            EndTime = new TimeSpan(0, 12, 0, 0, 0),
-                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
+                            EndTime = new TimeOnly(12, 0, 0),
+                            SlotDurationMinutes = 0,
+                            StartTime = new TimeOnly(9, 0, 0)
                         },
                         new
                         {
                             Id = 5,
                             Day = "Friday",
                             DoctorId = 1,
-                            EndTime = new TimeSpan(0, 12, 30, 0, 0),
-                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
+                            EndTime = new TimeOnly(12, 30, 0),
+                            SlotDurationMinutes = 0,
+                            StartTime = new TimeOnly(10, 0, 0)
                         });
                 });
 
@@ -181,8 +195,7 @@ namespace ClinicBooking.DAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
@@ -205,7 +218,7 @@ namespace ClinicBooking.DAL.Migrations
                             Id = 1,
                             Bio = "Senior Doctor",
                             ConsultationFee = 1000m,
-                            Name = "Dr. Ahmed",
+                            Name = "doctor1",
                             SpecialtyId = 1,
                             UserId = 2
                         },
@@ -214,7 +227,7 @@ namespace ClinicBooking.DAL.Migrations
                             Id = 2,
                             Bio = "Specialist",
                             ConsultationFee = 1000m,
-                            Name = "Dr. Mona",
+                            Name = "doctor2",
                             SpecialtyId = 2,
                             UserId = 3
                         });

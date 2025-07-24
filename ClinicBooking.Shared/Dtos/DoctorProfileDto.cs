@@ -10,12 +10,10 @@ namespace ClinicBooking.Shared.Dtos
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public string Email { get; set; }
-        public string Username { get; set; }
+        public string Email { get; set; }   
         public string PhoneNumber { get; set; }
         public string Bio { get; set; }               
-        public string Specialty { get; set; }
+        public string SpecialtyName { get; set; }
 
         public decimal ConsultationFee { get; set; }    
     }

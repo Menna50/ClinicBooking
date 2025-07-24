@@ -11,7 +11,7 @@ namespace ClinicBooking.BLL.Services.Interfaces
     public interface IAuthService
     {
         public Task<ResultT<AuthResponseDto>> RegisterAsync(RegisterRequestDto dto);
-        public  Task<AuthResponseDto> LoginAsync(LoginRequestDto dto);
+        public Task<ResultT<AuthResponseDto>> LoginAsync(LoginRequestDto dto);
      
 
     }

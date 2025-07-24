@@ -15,7 +15,9 @@ namespace ClinicBooking.DAL.Repositories.Interfaces
         public  Task UpdateAsync(T entity);
         public Task DeleteAsync(T entity);
         public Task<bool> SaveChangesAsync();
-
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
 
     }
 }

@@ -1,8 +1,12 @@
 ﻿using ClinicBooking.BLL.Services.Interfaces;
+using ClinicBooking.DAL.Data;
 using ClinicBooking.DAL.Data.Entities;
 using ClinicBooking.DAL.Data.Enums;
 using ClinicBooking.DAL.Repositories.Interfaces;
 using ClinicBooking.Shared.Dtos;
+using ClinicBooking.Shared.Results;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -14,41 +18,168 @@ namespace ClinicBooking.BLL.Services.Implementations
 {
     public class DoctorService : IDoctorService
     {
-        private readonly IGenericRepository<Doctor> _repo;
+        private readonly IGenericRepository<Doctor> _genericRepo;
         private readonly IAuthService _authService;
-        public DoctorService(IGenericRepository<Doctor> repo, IAuthService authService)
+        private readonly IDoctorRepo _doctorRepo;
+        private readonly AppDbContext _dbContext;
+        private readonly ISpecialtyRepo _specialtyRepo;
+
+        public DoctorService(ISpecialtyRepo specialtyRepo,IGenericRepository<Doctor> repo, IAuthService authService, IDoctorRepo doctorRepo, AppDbContext dbConetxt)
         {
-            _repo = repo;
+            _genericRepo = repo;
             _authService = authService;
+            _doctorRepo = doctorRepo;
+            _dbContext = dbConetxt;
+            _specialtyRepo  = specialtyRepo;
         }
-        public async Task AddDoctorAsync(DoctorRegisterDto dto)
+        private async Task<ResultT<AuthResponseDto>> RegisterDoctorAsUser(DoctorRegisterDto dto)
         {
-            if (dto.Password != dto.ConfirmPassword)
+            var registerRequest = new RegisterRequestDto
             {
-                throw new Exception("Confirm Passwor is not correct");
-            }
-            RegisterRequestDto RegisterRequestDto = new RegisterRequestDto()
-            {
-                UserName = dto.Name,
+                UserName = dto.UserName,
                 Password = dto.Password,
+                ConfirmPassword = dto.ConfirmPassword,
                 Email = dto.Email,
-                PhoneNumber=dto.PhoneNumber,
-                Role = Role.Doctor
-
-
+                PhoneNumber = dto.PhoneNumber,
+                Role = Roles.Doctor
             };
-            await _authService.RegisterAsync(RegisterRequestDto);
-            var doctor = new Doctor()
+
+            var authResponse = await _authService.RegisterAsync(registerRequest);
+
+
+            return authResponse;
+
+        }
+        public async Task<ResultT<DoctorProfileDto>> AddDoctorAsync(DoctorRegisterDto dto)
+        {
+            try
             {
-                Name = dto.Name,
-                SpecialtyId = dto.SpecialtyId,
-                Bio = dto.Bio,
-            
-                ConsultationFee = dto.ConsultationFee,
-                UserId = 2
+                // Start transaction from generic repo
+                await _genericRepo.BeginTransactionAsync();
+
+                // Register user for doctor (auth service)
+                var authResponse = await RegisterDoctorAsUser(dto);
+                if (!authResponse.IsSuccess)
+                {
+                    await _genericRepo.RollbackTransactionAsync();
+                    return ResultT<DoctorProfileDto>.Failure(authResponse.StatusCode, authResponse.Error);
+                }
+
+                // 🩺 Create doctor
+                var doctor = new Doctor
+                {
+                    Name = dto.Name,
+                    SpecialtyId = dto.SpecialtyId,
+                    Bio = dto.Bio,
+                    ConsultationFee = dto.ConsultationFee,
+                    UserId = authResponse.Data.Id
+                };
+
+                await _genericRepo.AddAsync(doctor);
+                var saved = await _genericRepo.SaveChangesAsync();
+
+                if (!saved)
+                {
+                    await _genericRepo.RollbackTransactionAsync();
+                    return ResultT<DoctorProfileDto>.Failure(StatusCodes.Status500InternalServerError,
+                        new Error("SaveFailed", "Failed to save doctor"));
+                }
+
+                // Commit transaction
+                await _genericRepo.CommitTransactionAsync();
+
+                // Load full doctor details
+                var doctorWithDetails = await _doctorRepo.GetByIdAsync(doctor.Id);
+                if (doctorWithDetails == null || doctorWithDetails.User == null || doctorWithDetails.Specialty == null)
+                {
+                    return ResultT<DoctorProfileDto>.Failure(StatusCodes.Status500InternalServerError,
+                        new Error("DoctorLoadFailed", "Could not load doctor details after creation."));
+                }
+
+                // 🧾 Map to DTO
+                var doctorProfileDto = new DoctorProfileDto
+                {
+                    Id = doctorWithDetails.Id,
+                    Name = doctorWithDetails.Name,
+                    Email = doctorWithDetails.User.Email,
+                    PhoneNumber = doctorWithDetails.User.PhoneNumber,
+                    SpecialtyName = doctorWithDetails.Specialty.Name,
+                    ConsultationFee = doctorWithDetails.ConsultationFee,
+                    Bio = doctorWithDetails.Bio
+                };
+
+                return ResultT<DoctorProfileDto>.Success(StatusCodes.Status201Created, doctorProfileDto);
+            }
+            catch (Exception)
+            {
+                await _genericRepo.RollbackTransactionAsync();
+
+                return ResultT<DoctorProfileDto>.Failure(StatusCodes.Status500InternalServerError,
+                    new Error("DoctorRegistrationFailed", "An error occurred while registering the doctor"));
+            }
+        }
+
+
+        public async Task<ResultT<DoctorProfileDto>> GetDoctorProfileAsync(int userId)
+        {
+            var doctor = await _doctorRepo.GetByUserIdAsync(userId);
+            if (doctor == null)
+                return ResultT<DoctorProfileDto>.Failure(404, new Error("Doctor not found", "Doctor not found"));
+
+            var doctorProfileDto = new DoctorProfileDto()
+            {
+                Id = doctor.Id,
+                Name = doctor.Name,
+
+                Email = doctor.User.Email,
+                Bio = doctor.Bio,
+                PhoneNumber = doctor.User.Email,
+                SpecialtyName = doctor.Specialty.Name
+
             };
-            await _repo.AddAsync(doctor);
-            //  await    _repo.SaveChangesAsync();
+            return ResultT<DoctorProfileDto>.Success(200, doctorProfileDto);
+        }
+
+        public async Task<Result> UpdateDoctorProfile(UpdateDoctorProfileDto dto, int id)
+        {
+            var doctor = await _doctorRepo.GetByUserIdAsync(id);
+            if (doctor == null)
+                return Result.Failure(StatusCodes.Status404NotFound, new Error("DoctorNotFound", "Doctor not found"));
+            doctor.Name = dto.Name;
+            doctor.ConsultationFee = dto.ConsultationFee;
+            doctor.Bio = dto.Bio;
+            doctor.User.PhoneNumber = dto.PhoneNumber;
+            // not very important coz ef trackes the the doctor which is retrived from dbset in dbcontext
+          //  await _genericRepo.UpdateAsync(doctor);
+            await _genericRepo.SaveChangesAsync();
+            return Result.Success(204);
+
+        }
+
+        public async Task<ResultT<List<DoctorProfileDto>>> GetAllDoctorBySpecialtyIdAsync(int specialtyId)
+        {
+
+       if(! await    _specialtyRepo.SpecialtyExistsAsync(specialtyId))
+            {
+                return ResultT<List<DoctorProfileDto>>.Failure(StatusCodes.Status404NotFound,
+                    new Error("SpecialtyIdIsNotExist", "Specialty id is not exixt")
+                    ) ;
+
+            }
+            var doctors = await _doctorRepo.GetAllBySpecialtiyId(specialtyId);
+            var doctorDtos = doctors.Select(d => new DoctorProfileDto
+            {
+                Id = d.Id,
+                Name = d.Name,          // تأكد من وجود User
+                Email = d.User?.Email,
+                PhoneNumber = d.User?.PhoneNumber,
+                Bio = d.Bio,
+                SpecialtyName = d.Specialty?.Name,    // تأكد من وجود Specialty
+                ConsultationFee = d.ConsultationFee
+            }).ToList();
+
+
+            return ResultT<List<DoctorProfileDto>>.Success(StatusCodes.Status200OK, doctorDtos);
         }
     }
 }

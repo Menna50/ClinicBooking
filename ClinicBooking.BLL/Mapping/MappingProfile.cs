@@ -15,6 +15,10 @@ namespace ClinicBooking.BLL.Mapping
        
         public MappingProfile()
         {
+            CreateMap<AddAvailabilityRequestDto, Availability>();
+            CreateMap<Availability, AvailabilityDto>();
+            CreateMap<UpdateAvailabilityRequestDto, Availability>();
+            CreateMap<Specialty, SpecialtyDto>();
             //     CreateMap<User, LoginRequestDto>().ReverseMap();
       //      CreateMap<RegisterRequestDto, User>()
       //.ForMember(dest => dest.PasswordHash, opt => opt.Ignore())

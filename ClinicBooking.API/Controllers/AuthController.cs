@@ -7,6 +7,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Xml.Linq;
 using ClinicBooking.DAL.Data.Entities;
 using System.Text;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicBooking.API.Controllers
 {
@@ -14,27 +16,31 @@ namespace ClinicBooking.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ITokenHelper _tokenHelper;
         private readonly IAuthService _authService;
-        public AuthController(ITokenHelper tokenHelper, IAuthService authService)
+        private readonly IValidator<RegisterRequestDto> _validator;
+        private readonly IPatientService _patientService;
+        public AuthController(IPatientService patientService,IAuthService authService,IValidator<RegisterRequestDto> validator)
         {
-            _tokenHelper = tokenHelper;
             _authService = authService;
+            _validator = validator;
+            _patientService = patientService;
         }
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
-            var user = await _authService.LoginAsync(request);
-            if (user == null)
-                return BadRequest("Login Data is invalid");
-            return Ok(user);
+            var res = await _authService.LoginAsync(request);
+
+            if (res.IsSuccess)
+                return StatusCode(res.StatusCode, res.Data);
+            return StatusCode(res.StatusCode, res.Error);
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterRequestDto request)
+      
+        public async Task<IActionResult> Register(PatientRegisterRequestDto request)
         {
-            throw new NotImplementedException();
-          
-            var res =  await _authService.RegisterAsync(request);
+
+         
+            var res =  await _patientService.AddAsync(request);
             if (res.IsSuccess)
                 return StatusCode(res.StatusCode, res.Data);
             return StatusCode(res.StatusCode, res.Error);
