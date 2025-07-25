@@ -1,51 +1,73 @@
-### Role Design Decision
+🏥 Clinic Booking System
+A comprehensive clinic appointment booking platform designed to seamlessly connect patients and doctors. The system provides a robust API for managing doctor profiles, schedules, and appointment bookings, with full support for distinct user roles: Patient, Doctor, and Admin.
 
-In this system, each user has exactly one role, stored as a simple `enum` (e.g., Admin, Doctor, Patient) within the `User` entity.
+✨ Key Features
+🔐 Authentication & Authorization
+Secure login/registration for both Patients and Doctors.
 
-This approach is intentionally used to:
+JWT-based authentication for secure, stateless sessions.
 
-- Keep the architecture simple and maintainable
-- Align with the current project scope (single-role per user)
-- Avoid unnecessary complexity for a system that does not yet require dynamic role/permission management
+Granular role-based access control (Admin, Doctor, Patient).
 
-### Why Not a Role Table or Many-to-Many Relationship?
+👨‍⚕️ Doctor Management
+Admin-Only Doctor Creation: Only Admins can add doctors.
 
-While using a separate `Roles` table and supporting many-to-many relationships between users and roles is a more flexible and scalable design — it introduces extra complexity (e.g., user-role linking, role claims, dynamic permission resolution).
+Self-Service Profile Editing: Doctors can manage their profiles.
 
-Since this system currently supports **one role per user**, the enum-based approach is cleaner, faster to implement, and fits the use case perfectly.
+Public Profile Viewing: Doctor profiles are visible to all users.
 
-### Future Improvements
+🩺 Specialty Management
+Admin Full Control: Admins can create, update, and delete medical specialties.
 
-If the system grows to support features like:
+📅 Availability Scheduling
+Doctor-Managed Schedules: Doctors can define their availability (days, times, slot durations).
 
-- Assigning multiple roles to a user
-- Managing roles dynamically from an admin interface
-- Mapping fine-grained permissions per role
+Conflict Prevention: Overlap checks prevent scheduling conflicts.
 
-Then it can be extended to support a proper role-based access control (RBAC) model using:
+🧑‍💼 Patient Management
+Self-Registration & Profile Editing: Patients can register and manage their own profiles.
 
-- `Roles` table
-- `UserRoles` many-to-many linking table
-- Optional `Permissions` table (or Claims)
+📆 Appointment Booking
+Step-by-Step Booking Flow:
 
-This would follow enterprise best practices for large-scale systems.
+Choose a specialty
 
-### 🧾 Doctor Account Creation & Password Handling
+Select a doctor
 
-When an Admin creates a new Doctor account, the frontend is currently responsible for generating a **random temporary password**.
+Pick from available slots
 
-This password is not sent automatically by the system. Instead, the Admin is expected to **communicate it manually** to the Doctor (e.g., via email, phone, or other secure channels).
+Flexible Cancellations:
 
-This approach keeps the system simple and avoids dependencies on external email providers during early development stages.
+Patients: Cancel their own bookings
 
----
+Doctors: Cancel their own appointments
 
-### 🚀 Planned Enhancement: Email-Based Account Activation
+Admins: Cancel any appointment
 
-In future iterations of the system, we plan to implement a more secure and automated onboarding process that includes:
+Status Management: Admins can update statuses (Confirmed, Completed, No-Show).
 
-- Sending an activation link or temporary password to the Doctor’s registered email.
-- Requiring the Doctor to set a new password on first login.
-- Automatically locking the account until the email is verified.
+Personalized Views:
 
-This improvement aims to enhance security, streamline the onboarding process, and better reflect real-world production-ready practices.
+Patients: See all their appointments
+
+Doctors: See all scheduled appointments
+
+✅ Input Validation & Logging
+FluentValidation: Applied globally for consistent, strong input validation.
+
+Serilog: Logs all key actions and errors to console and files.
+
+🌐 Clean RESTful API
+Well-organized, scalable, and maintainable API structure.
+
+🛠️ Technologies Used
+Tech	Purpose
+.NET Core (ASP.NET API)	Backend framework
+Entity Framework Core	ORM for database interaction
+SQL Server	Relational database
+FluentValidation	Input validation
+Serilog	Logging
+AutoMapper	DTO and entity mapping
+JWT	Authentication & authorization
+Swagger/OpenAPI	API documentation & testing
+
