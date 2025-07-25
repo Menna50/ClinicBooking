@@ -25,6 +25,8 @@ namespace ClinicBooking.DAL.Data.Config
             //speciality Rel
             builder.HasOne(d => d.Specialty).WithMany(s => s.Doctors)
                 .HasForeignKey(d => d.SpecialtyId);
+            //filter
+            builder.HasQueryFilter(d => !d.IsDeleted);
         }
     }
 }

@@ -9,10 +9,11 @@ using ClinicBooking.DAL.Data.Entities;
 using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using ClinicBooking.Shared.Results;
 
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -25,7 +26,7 @@ namespace ClinicBooking.API.Controllers
             _validator = validator;
             _patientService = patientService;
         }
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var res = await _authService.LoginAsync(request);
@@ -34,8 +35,8 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Data);
             return StatusCode(res.StatusCode, res.Error);
         }
-        [HttpPost]
-      
+        [HttpPost("register")]
+
         public async Task<IActionResult> Register(PatientRegisterRequestDto request)
         {
 
@@ -45,5 +46,6 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Data);
             return StatusCode(res.StatusCode, res.Error);
         }
+       
     }
 }

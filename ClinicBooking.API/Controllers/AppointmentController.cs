@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -35,8 +35,8 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(result.StatusCode, result.Data);
             return StatusCode(result.StatusCode, result.Error);
     }
-    
-        [HttpGet]
+
+        [HttpGet("doctor")]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetDoctorAppointments([FromQuery] bool upcomingOnly = true)
         {
@@ -52,7 +52,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(result.StatusCode, result.Error);
         }
 
-        [HttpGet]
+        [HttpGet("patient")] 
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetPatientAppointments( [FromQuery] bool upcomingOnly = true)
         {
@@ -67,7 +67,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(result.StatusCode, result.Error);
         }
 
-        [HttpPut]
+        [HttpPut("{id}/cancel")]
         [Authorize(Roles = "Admin,Doctor,Patient")]
 
         public async Task<IActionResult> CancelAppointment(int id)
@@ -88,7 +88,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(result.StatusCode, result.Error);
         }
 
-        [HttpPut]
+        [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromQuery] AppointmentStatus status)
         {

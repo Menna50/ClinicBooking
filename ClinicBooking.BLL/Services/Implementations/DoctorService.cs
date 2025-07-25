@@ -1,4 +1,5 @@
-﻿using ClinicBooking.BLL.Services.Interfaces;
+﻿using AutoMapper;
+using ClinicBooking.BLL.Services.Interfaces;
 using ClinicBooking.DAL.Data;
 using ClinicBooking.DAL.Data.Entities;
 using ClinicBooking.DAL.Data.Enums;
@@ -23,14 +24,16 @@ namespace ClinicBooking.BLL.Services.Implementations
         private readonly IDoctorRepo _doctorRepo;
         private readonly AppDbContext _dbContext;
         private readonly ISpecialtyRepo _specialtyRepo;
+        private readonly IMapper _mapper;
 
-        public DoctorService(ISpecialtyRepo specialtyRepo,IGenericRepository<Doctor> repo, IAuthService authService, IDoctorRepo doctorRepo, AppDbContext dbConetxt)
+        public DoctorService(IMapper mapper,ISpecialtyRepo specialtyRepo,IGenericRepository<Doctor> repo, IAuthService authService, IDoctorRepo doctorRepo, AppDbContext dbConetxt)
         {
             _genericRepo = repo;
             _authService = authService;
             _doctorRepo = doctorRepo;
             _dbContext = dbConetxt;
             _specialtyRepo  = specialtyRepo;
+            _mapper = mapper;
         }
         private async Task<ResultT<AuthResponseDto>> RegisterDoctorAsUser(DoctorRegisterDto dto)
         {
@@ -180,6 +183,35 @@ namespace ClinicBooking.BLL.Services.Implementations
 
 
             return ResultT<List<DoctorProfileDto>>.Success(StatusCodes.Status200OK, doctorDtos);
+        }
+        public async Task<Result> DeleteDoctorAsync(int id)
+        {
+            var deleted = await _doctorRepo.SoftDeleteAsync(id);
+
+            if (!deleted)
+            {
+                return Result.Failure(StatusCodes.Status404NotFound,
+                    new Error("DoctorNotFound", "Doctor not found or already deleted"));
+            }
+
+            return Result.Success(StatusCodes.Status200OK);
+        }
+        public async Task<ResultT<List<AdminDoctorListDto>>> GetAllDoctorsAsync(bool includeDeleted = false)
+        {
+            var doctors = await _doctorRepo.GetAllAsync(includeDeleted);
+
+            var dtos = _mapper.Map<List<AdminDoctorListDto>>(doctors);
+            return ResultT<List<AdminDoctorListDto>>.Success(StatusCodes.Status200OK, dtos);
+        }
+        public async Task<ResultT<AdminDoctorDto>> GetDoctorByIdAsync(int id)
+        {
+            var doctor = await _doctorRepo.GetByIdAsync(id,true);
+            if (doctor == null)
+                return ResultT<AdminDoctorDto>.Failure(StatusCodes.Status404NotFound,
+                    new Error("DoctorNotFound", "Doctor not found"));
+
+            var dto = _mapper.Map<AdminDoctorDto>(doctor);
+            return ResultT<AdminDoctorDto>.Success(StatusCodes.Status200OK, dto);
         }
     }
 }

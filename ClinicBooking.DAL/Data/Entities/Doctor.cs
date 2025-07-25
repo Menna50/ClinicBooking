@@ -13,6 +13,7 @@ namespace ClinicBooking.DAL.Data.Entities
         public int SpecialtyId { get; set; }
         public Specialty Specialty { get; set; }
         public string Bio { get; set; }
+        public bool IsDeleted {  get; set; }
         public decimal ConsultationFee { get; set; }
         public int UserId { set; get; }
         public User User { set; get; }

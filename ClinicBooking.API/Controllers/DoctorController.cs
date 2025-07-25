@@ -10,7 +10,7 @@ using ClinicBooking.Shared.Results;
 
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Doctor")]
     public class DoctorController : ControllerBase
@@ -20,7 +20,7 @@ namespace ClinicBooking.API.Controllers
         {
             _doctorService = doctorService;
         }
-        [HttpGet]
+        [HttpGet("me")] // GET api/doctors/me
         public async Task<IActionResult> GetDoctorProfile()
         {
             var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -44,7 +44,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(res.StatusCode, res.Error);
         }
 
-        [HttpPut]
+        [HttpPut("me")] // PUT api/doctors/me
         public async Task<IActionResult> UpdateDoctorProfile(UpdateDoctorProfileDto dto)
         {
             var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

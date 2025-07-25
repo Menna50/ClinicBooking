@@ -50,6 +50,43 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
                .FirstOrDefaultAsync(d => d.UserId == id);
             return doctor;
         }
+        public async Task<bool> SoftDeleteAsync(int doctorId)
+        {
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(d => d.Id == doctorId && !d.IsDeleted);
+
+            if (doctor == null)
+                return false;
+
+            doctor.IsDeleted = true;
+            _context.Doctors.Update(doctor);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<IEnumerable<Doctor>> GetAllAsync(bool includeDeleted = false)
+        {
+            IQueryable<Doctor> query = _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Specialty);
+
+            if (includeDeleted)
+                query = query.IgnoreQueryFilters();
+
+            return await query.ToListAsync();
+        }
+        public async Task<Doctor?> GetByIdAsync(int id, bool includeDeleted = false)
+        {
+            IQueryable<Doctor> query = _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Specialty);
+
+            if (includeDeleted)
+                query = query.IgnoreQueryFilters();
+
+            return await query.FirstOrDefaultAsync(d => d.Id == id);
+        }
 
     }
 }

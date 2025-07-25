@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace ClinicBooking.API.Controllers
 {
 
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AvailabilityController : ControllerBase
     {
@@ -37,22 +37,22 @@ namespace ClinicBooking.API.Controllers
         }
         [Authorize(Roles = "Doctor")]
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var currentUserClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (currentUserClaim == null || !int.TryParse(currentUserClaim.Value, out int userId))
-            {
-                return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
-            }
-            var res = await _availabilityService.GetAllByDoctorId(userId);
-            if (!res.IsSuccess)
-                return StatusCode(res.StatusCode, res.Error);
-            return StatusCode(res.StatusCode,res.Data);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var currentUserClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        //    if (currentUserClaim == null || !int.TryParse(currentUserClaim.Value, out int userId))
+        //    {
+        //        return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
+        //    }
+        //    var res = await _availabilityService.GetAllByDoctorId(userId);
+        //    if (!res.IsSuccess)
+        //        return StatusCode(res.StatusCode, res.Error);
+        //    return StatusCode(res.StatusCode,res.Data);
+        //}
         [Authorize(Roles = "Doctor")]
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int availabilityId)
         {
             var currentUserClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -67,7 +67,7 @@ namespace ClinicBooking.API.Controllers
         }
         [Authorize(Roles = "Doctor")]
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int availabilityId,UpdateAvailabilityRequestDto requestDto)
         {
             var currentUserClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -80,7 +80,7 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Error);
             return StatusCode(res.StatusCode);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Delete(int availabilityId)
         {

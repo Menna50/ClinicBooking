@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -18,7 +18,7 @@ namespace ClinicBooking.API.Controllers
         {
             _patientService = patientService;
         }
-        [HttpGet]
+        [HttpGet("me")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GeProfile()
         {
@@ -33,7 +33,7 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Error);
             return StatusCode(res.StatusCode, res.Data);
         }
-        [HttpPut]
+        [HttpPut("me")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Update(UpdatePatientProfileDto dto)
         {

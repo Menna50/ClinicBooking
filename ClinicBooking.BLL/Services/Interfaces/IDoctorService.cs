@@ -13,6 +13,10 @@ namespace ClinicBooking.BLL.Services.Interfaces
         public Task<ResultT<DoctorProfileDto>> AddDoctorAsync(DoctorRegisterDto doctorRegisterDto);
         public Task<ResultT<DoctorProfileDto>> GetDoctorProfileAsync(int id);
         public Task<Result> UpdateDoctorProfile(UpdateDoctorProfileDto dto, int id);
-        public Task<ResultT<List<DoctorProfileDto>>> GetAllDoctorBySpecialtyIdAsync(int specialtyId);   
+        public Task<ResultT<List<DoctorProfileDto>>> GetAllDoctorBySpecialtyIdAsync(int specialtyId);
+     public   Task<Result> DeleteDoctorAsync(int id);
+     public   Task<ResultT<List<AdminDoctorListDto>>> GetAllDoctorsAsync(bool includeDeleted = false);
+        Task<ResultT<AdminDoctorDto>> GetDoctorByIdAsync(int id);
+
     }
 }

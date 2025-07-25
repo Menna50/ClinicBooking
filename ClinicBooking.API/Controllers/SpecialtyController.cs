@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicBooking.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles ="Admin")]
     public class SpecialtyController : ControllerBase
@@ -26,7 +26,7 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Error);
             return StatusCode(res.StatusCode, res.Data);
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
@@ -45,7 +45,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(res.StatusCode, res.Error);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] UpdateSpecialtyDto dto)
         {
             var res = await _specialtyService.UpdateAsync(dto);
