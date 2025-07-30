@@ -71,3 +71,4 @@ AutoMapper	DTO and entity mapping
 JWT	Authentication & authorization
 Swagger/OpenAPI	API documentation & testing
 
+🔗 Live Demo: http://clinicbooking.runasp.net/swagger/index.html
