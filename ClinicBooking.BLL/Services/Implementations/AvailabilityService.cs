@@ -27,12 +27,12 @@ namespace ClinicBooking.BLL.Services.Implementations
             _doctorRepo = doctorRepo;
             _availabilityRepo = availabilityRepo;
         }
-        public async Task<ResultT<AvailabilityDto>> Add(AddAvailabilityRequestDto dto, int userId)
+        public async Task<ResultT<AvailabilityListDto>> Add(AddAvailabilityRequestDto dto, int userId)
         {
             var doctor = await _doctorRepo.GetByUserIdAsync(userId);
             if (doctor == null)
             {
-                return ResultT<AvailabilityDto>.Failure(
+                return ResultT<AvailabilityListDto>.Failure(
                     StatusCodes.Status404NotFound,
                     new Error("DoctorNotFound", "Doctor not found")
                 );
@@ -42,7 +42,7 @@ namespace ClinicBooking.BLL.Services.Implementations
                 dto.StartTime, dto.EndTime,dto.EffectiveFrom,dto.EffectiveTo);
             if (isOverLapping)
             {
-                return ResultT<AvailabilityDto>.Failure(StatusCodes.Status409Conflict,
+                return ResultT<AvailabilityListDto>.Failure(StatusCodes.Status409Conflict,
                    new Error("AVAILABILITY.OVERLAPPING", "This time slot overlaps with another one."));
 
             }
@@ -50,8 +50,8 @@ namespace ClinicBooking.BLL.Services.Implementations
             availability.DoctorId = doctor.Id;
             await _genericRepo.AddAsync(availability);
             await _genericRepo.SaveChangesAsync();
-            var dtoAfterAdded = _mapper.Map<AvailabilityDto>(availability);
-            return ResultT<AvailabilityDto>.Success(StatusCodes.Status201Created, dtoAfterAdded);
+            var dtoAfterAdded = _mapper.Map<AvailabilityListDto>(availability);
+            return ResultT<AvailabilityListDto>.Success(StatusCodes.Status201Created, dtoAfterAdded);
 
         }
 
@@ -60,7 +60,7 @@ namespace ClinicBooking.BLL.Services.Implementations
             var doctor = await _doctorRepo.GetByUserIdAsync(userId);
             if (doctor == null)
             {
-                return ResultT<AvailabilityDto>.Failure(
+                return ResultT<AvailabilityListDto>.Failure(
                     StatusCodes.Status404NotFound,
                     new Error("DoctorNotFound", "Doctor not found")
                 );
@@ -97,21 +97,21 @@ namespace ClinicBooking.BLL.Services.Implementations
         }
 
 
-        public async Task<ResultT<List<AvailabilityDto>>> GetAllByDoctorId(int userId)
+        public async Task<ResultT<List<AvailabilityListDto>>> GetAllByDoctorId(int userId)
         {
             var doctor = await _doctorRepo.GetByUserIdAsync(userId);
             if (doctor == null)
             {
-                return ResultT<List<AvailabilityDto>>.Failure(
+                return ResultT<List<AvailabilityListDto>>.Failure(
                     StatusCodes.Status404NotFound,
                     new Error("DoctorNotFound", "Doctor not found")
                 );
             }
             var availbilities = await _availabilityRepo.GetAllByDoctorIdAsync(doctor.Id);
             if (availbilities == null)
-                return ResultT<List<AvailabilityDto>>.Failure(StatusCodes.Status404NotFound, new Error("No Availabilites", "No Availabilites"));
-            var availabilitiesDto = _mapper.Map<List<AvailabilityDto>>(availbilities);
-            return ResultT<List<AvailabilityDto>>.Success(StatusCodes.Status200OK, availabilitiesDto);
+                return ResultT<List<AvailabilityListDto>>.Failure(StatusCodes.Status404NotFound, new Error("No Availabilites", "No Availabilites"));
+            var availabilitiesDto = _mapper.Map<List<AvailabilityListDto>>(availbilities);
+            return ResultT<List<AvailabilityListDto>>.Success(StatusCodes.Status200OK, availabilitiesDto);
         }
 
         public async Task<Result> UpdateAvailabilityAsync(int availabilityId, UpdateAvailabilityRequestDto dto, int userId)

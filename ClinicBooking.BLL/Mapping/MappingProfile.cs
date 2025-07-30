@@ -16,6 +16,7 @@ namespace ClinicBooking.BLL.Mapping
         public MappingProfile()
         {
             CreateMap<AddAvailabilityRequestDto, Availability>();
+            CreateMap<Availability, AvailabilityListDto>();
             CreateMap<Availability, AvailabilityDto>();
             CreateMap<UpdateAvailabilityRequestDto, Availability>();
             CreateMap<Specialty, SpecialtyDto>();

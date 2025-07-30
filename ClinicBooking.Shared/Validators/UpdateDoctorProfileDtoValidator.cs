@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.Shared.Validators
 {
-    public class UpdateDoctorProfileDtoValidator:AbstractValidator<UpdateDoctorProfileDto>
+    public class UpdateDoctorProfileDtoValidator : AbstractValidator<UpdateDoctorProfileDto>
     {
         public UpdateDoctorProfileDtoValidator()
         {
@@ -23,13 +23,16 @@ namespace ClinicBooking.Shared.Validators
                .MaximumLength(100).WithMessage("Doctor's name cannot exceed 100 characters.");
 
             RuleFor(x => x.Bio)
-                .NotNull().WithMessage("Bio cannot be null.") 
+                .NotNull().WithMessage("Bio cannot be null.")
                 .MaximumLength(1000).WithMessage("Bio cannot exceed 1000 characters.");
 
             // Validation rules for PhoneNumber
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("Phone number is required.")
-                .NotNull().WithMessage("Phone number cannot be null.");
+                .NotNull().WithMessage("Phone number cannot be null.")
+                .Matches(@"^[0-9]{10,15}$")
+        .WithMessage("Phone number is not valid. It should contain only digits and be 10 to 15 digits long.");
+
 
             // Validation rules for ConsultationFee
             RuleFor(x => x.ConsultationFee)

@@ -1,5 +1,6 @@
 ﻿using ClinicBooking.DAL.Data;
 using ClinicBooking.DAL.Data.Entities;
+using ClinicBooking.DAL.Data.Enums;
 using ClinicBooking.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -81,7 +82,10 @@ namespace ClinicBooking.DAL.Repositories.Implemetations
             return await _context.Appointments
                 .Where(a => a.DoctorId == doctorId &&
                             a.AppointmentDate.Date >= fromDate.Date &&
-                            a.AppointmentDate.Date <= toDate.Date)
+                            a.AppointmentDate.Date <= toDate.Date
+                            && (a.Status == AppointmentStatus.Scheduled ||
+                     a.Status == AppointmentStatus.Completed ||
+                     a.Status == AppointmentStatus.NoShow))
                 .Select(a => a.AppointmentDate)
                 .ToListAsync();
         }

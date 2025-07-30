@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Identity;
 using ClinicBooking.API.Filters;
 using ClinicBooking.Shared.Dtos;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ClinicBooking.API
 {
@@ -37,7 +38,7 @@ namespace ClinicBooking.API
             builder.Host.UseSerilog();
 
             // Add services to the container.
-
+           
             //Global Filters
 
             builder.Services.AddControllers(opt=>
@@ -52,6 +53,16 @@ namespace ClinicBooking.API
             //AddDbContext
             builder.Services.AddDbContext<AppDbContext>(option =>
             option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddControllers();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.MapType<TimeOnly>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Format = "time",
+                    Example = OpenApiAnyFactory.CreateFromJson("\"09:00:00\"")
+                });
+            });
 
 
             //AddAuthSerice
@@ -150,11 +161,11 @@ namespace ClinicBooking.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            //if (app.Environment.IsDevelopment())
+            //{
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+           // }
             app.UseExceptionHandlingMiddleware();
             //      app.UseMiddleware<MennaExceptionHandlingMiddleware>();
 

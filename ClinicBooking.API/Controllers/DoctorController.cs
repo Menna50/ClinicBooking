@@ -35,7 +35,7 @@ namespace ClinicBooking.API.Controllers
         }
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetDoctorsBySpecialty(int specialtyId)
+        public async Task<IActionResult> GetDoctorsBySpecialty(int? specialtyId)
         {
          
             var res = await _doctorService.GetAllDoctorBySpecialtyIdAsync(specialtyId);

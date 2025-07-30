@@ -36,7 +36,9 @@ namespace ClinicBooking.Shared.Validators
                 .MaximumLength(50).WithMessage("Last name cannot exceed 50 characters.");
             RuleFor(x => x.PhoneNumber)
               .NotEmpty().WithMessage("Phone number is required.")
-              .NotNull().WithMessage("Phone number cannot be null.");
+              .NotNull().WithMessage("Phone number cannot be null.")
+               .Matches(@"^[0-9]{10,15}$")
+        .WithMessage("Phone number is not valid. It should contain only digits and be 10 to 15 digits long."); ;
 
             RuleFor(x => x.Age)
                 .InclusiveBetween(0, 120).WithMessage("Age must be between 0 and 120."); // Adjust range as needed

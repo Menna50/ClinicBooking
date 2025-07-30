@@ -75,12 +75,12 @@ namespace ClinicBooking.BLL.Services.Implementations
                 await _genericRepo.AddAsync(patient);
                 var saved = await _genericRepo.SaveChangesAsync();
 
-                if (!saved)
-                {
-                    await _genericRepo.RollbackTransactionAsync();
-                    return ResultT<PatientProfileDto>.Failure(StatusCodes.Status500InternalServerError,
-                        new Error("SaveFailed", "Failed to save patient"));
-                }
+                //if (!saved)
+                //{
+                //    await _genericRepo.RollbackTransactionAsync();
+                //    return ResultT<PatientProfileDto>.Failure(StatusCodes.Status500InternalServerError,
+                //        new Error("SaveFailed", "Failed to save patient"));
+                //}
 
                 await _genericRepo.CommitTransactionAsync();
 
@@ -97,12 +97,13 @@ namespace ClinicBooking.BLL.Services.Implementations
 
                 return ResultT<PatientProfileDto>.Success(StatusCodes.Status201Created, patientProfileDto);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+               
                 await _genericRepo.RollbackTransactionAsync();
 
                 return ResultT<PatientProfileDto>.Failure(StatusCodes.Status500InternalServerError,
-                    new Error("PatientRegistrationFailed", "An error occurred while registering the patient"));
+                    new Error(ex.InnerException.ToString(), "An error occurred while registering the patient"));
             }
         }
         public async Task<ResultT<PatientProfileDto>> GetProfileAsync(int userId)

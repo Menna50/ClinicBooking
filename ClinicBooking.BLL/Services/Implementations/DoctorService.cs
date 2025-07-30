@@ -26,13 +26,13 @@ namespace ClinicBooking.BLL.Services.Implementations
         private readonly ISpecialtyRepo _specialtyRepo;
         private readonly IMapper _mapper;
 
-        public DoctorService(IMapper mapper,ISpecialtyRepo specialtyRepo,IGenericRepository<Doctor> repo, IAuthService authService, IDoctorRepo doctorRepo, AppDbContext dbConetxt)
+        public DoctorService(IMapper mapper, ISpecialtyRepo specialtyRepo, IGenericRepository<Doctor> repo, IAuthService authService, IDoctorRepo doctorRepo, AppDbContext dbConetxt)
         {
             _genericRepo = repo;
             _authService = authService;
             _doctorRepo = doctorRepo;
             _dbContext = dbConetxt;
-            _specialtyRepo  = specialtyRepo;
+            _specialtyRepo = specialtyRepo;
             _mapper = mapper;
         }
         private async Task<ResultT<AuthResponseDto>> RegisterDoctorAsUser(DoctorRegisterDto dto)
@@ -133,7 +133,7 @@ namespace ClinicBooking.BLL.Services.Implementations
             {
                 Id = doctor.Id,
                 Name = doctor.Name,
-
+                ConsultationFee = doctor.ConsultationFee,
                 Email = doctor.User.Email,
                 Bio = doctor.Bio,
                 PhoneNumber = doctor.User.Email,
@@ -153,31 +153,39 @@ namespace ClinicBooking.BLL.Services.Implementations
             doctor.Bio = dto.Bio;
             doctor.User.PhoneNumber = dto.PhoneNumber;
             // not very important coz ef trackes the the doctor which is retrived from dbset in dbcontext
-          //  await _genericRepo.UpdateAsync(doctor);
+            //  await _genericRepo.UpdateAsync(doctor);
             await _genericRepo.SaveChangesAsync();
             return Result.Success(204);
 
         }
 
-        public async Task<ResultT<List<DoctorProfileDto>>> GetAllDoctorBySpecialtyIdAsync(int specialtyId)
+        public async Task<ResultT<List<DoctorProfileDto>>> GetAllDoctorBySpecialtyIdAsync(int? specialtyId)
         {
+            IEnumerable<Doctor> doctors = new List<Doctor>();
 
-       if(! await    _specialtyRepo.SpecialtyExistsAsync(specialtyId))
+            if (specialtyId != null)
             {
-                return ResultT<List<DoctorProfileDto>>.Failure(StatusCodes.Status404NotFound,
-                    new Error("SpecialtyIdIsNotExist", "Specialty id is not exixt")
-                    ) ;
 
+                if (!await _specialtyRepo.SpecialtyExistsAsync((int)specialtyId))
+                {
+                    return ResultT<List<DoctorProfileDto>>.Failure(StatusCodes.Status404NotFound,
+                        new Error("SpecialtyIdIsNotExist", "Specialty id is not exixt")
+                        );
+
+                }
+                doctors = await _doctorRepo.GetAllBySpecialtiyId((int)specialtyId);
             }
-            var doctors = await _doctorRepo.GetAllBySpecialtiyId(specialtyId);
+            else
+                doctors = await _genericRepo.GetAllAsync();
+
             var doctorDtos = doctors.Select(d => new DoctorProfileDto
             {
                 Id = d.Id,
-                Name = d.Name,          // تأكد من وجود User
+                Name = d.Name,        
                 Email = d.User?.Email,
                 PhoneNumber = d.User?.PhoneNumber,
                 Bio = d.Bio,
-                SpecialtyName = d.Specialty?.Name,    // تأكد من وجود Specialty
+                SpecialtyName = d.Specialty?.Name,   
                 ConsultationFee = d.ConsultationFee
             }).ToList();
 
@@ -205,7 +213,7 @@ namespace ClinicBooking.BLL.Services.Implementations
         }
         public async Task<ResultT<AdminDoctorDto>> GetDoctorByIdAsync(int id)
         {
-            var doctor = await _doctorRepo.GetByIdAsync(id,true);
+            var doctor = await _doctorRepo.GetByIdAsync(id, true);
             if (doctor == null)
                 return ResultT<AdminDoctorDto>.Failure(StatusCodes.Status404NotFound,
                     new Error("DoctorNotFound", "Doctor not found"));

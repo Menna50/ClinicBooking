@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace ClinicBooking.Shared.Dtos
 {
-    public class AvailabilityDto
+    public class AvailabilityListDto
     {
         public int Id { get; set; }
         public DayOfWeek Day { get; set; }
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public int SlotDurationMinutes { get; set; }
-        public DateTime? EffectiveFrom { get; set; }
-        public DateTime? EffectiveTo { get; set; }
     }
 }

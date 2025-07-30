@@ -34,9 +34,10 @@ namespace ClinicBooking.DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -50,9 +51,11 @@ namespace ClinicBooking.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SpecialtyId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    ConsultationFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -82,7 +85,6 @@ namespace ClinicBooking.DAL.Migrations
                     LName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -104,8 +106,11 @@ namespace ClinicBooking.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
                     Day = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false)
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    SlotDurationMinutes = table.Column<int>(type: "int", nullable: false),
+                    EffectiveFrom = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EffectiveTo = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -160,32 +165,32 @@ namespace ClinicBooking.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "Id", "Email", "PasswordHash", "PasswordSalt", "Role", "UserName" },
+                columns: new[] { "Id", "Email", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "UserName" },
                 values: new object[,]
                 {
-                    { 1, "admin@gmail.com", new byte[0], new byte[0], "Admin", "admin" },
-                    { 2, "doctor1@gmail.com", new byte[0], new byte[0], "Doctor", "doctor1" },
-                    { 3, "doctor2@gmail.com", new byte[0], new byte[0], "Doctor", "doctor2" },
-                    { 4, "patient1@gmail.com", new byte[0], new byte[0], "Patient", "patient1" },
-                    { 5, "patient2@gmail.com", new byte[0], new byte[0], "Patient", "patient2" }
+                    { 1, "admin@gmail.com", new byte[0], new byte[0], "123456789", "Admin", "admin" },
+                    { 2, "doctor1@gmail.com", new byte[0], new byte[0], "123456789", "Doctor", "doctor1" },
+                    { 3, "doctor2@gmail.com", new byte[0], new byte[0], "123456789", "Doctor", "doctor2" },
+                    { 4, "patient1@gmail.com", new byte[0], new byte[0], "123456789", "Patient", "patient1" },
+                    { 5, "patient2@gmail.com", new byte[0], new byte[0], "123456789", "Patient", "patient2" }
                 });
 
             migrationBuilder.InsertData(
                 table: "doctors",
-                columns: new[] { "Id", "Description", "Name", "SpecialtyId", "UserId" },
+                columns: new[] { "Id", "Bio", "ConsultationFee", "IsDeleted", "Name", "SpecialtyId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Senior Doctor", "Dr. Ahmed", 1, 2 },
-                    { 2, "Specialist", "Dr. Mona", 2, 3 }
+                    { 1, "Senior Doctor", 1000m, false, "doctor1", 1, 2 },
+                    { 2, "Specialist", 1000m, false, "doctor2", 2, 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "patients",
-                columns: new[] { "Id", "Age", "FName", "Gender", "LName", "Phone", "UserId" },
+                columns: new[] { "Id", "Age", "FName", "Gender", "LName", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 30, "Ali", "Male", "Hassan", "0100000001", 4 },
-                    { 2, 25, "Sara", "Female", "Youssef", "0100000002", 5 }
+                    { 1, 30, "Ali", "Male", "Hassan", 4 },
+                    { 2, 25, "Sara", "Female", "Youssef", 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -202,14 +207,14 @@ namespace ClinicBooking.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "availabilities",
-                columns: new[] { "Id", "Day", "DoctorId", "EndTime", "StartTime" },
+                columns: new[] { "Id", "Day", "DoctorId", "EffectiveFrom", "EffectiveTo", "EndTime", "SlotDurationMinutes", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, "Monday", 1, new TimeSpan(0, 12, 0, 0, 0), new TimeSpan(0, 9, 0, 0, 0) },
-                    { 2, "Wednesday", 1, new TimeSpan(0, 13, 0, 0, 0), new TimeSpan(0, 10, 0, 0, 0) },
-                    { 3, "Tuesday", 2, new TimeSpan(0, 14, 0, 0, 0), new TimeSpan(0, 11, 0, 0, 0) },
-                    { 4, "Thursday", 2, new TimeSpan(0, 12, 0, 0, 0), new TimeSpan(0, 9, 0, 0, 0) },
-                    { 5, "Friday", 1, new TimeSpan(0, 12, 30, 0, 0), new TimeSpan(0, 10, 0, 0, 0) }
+                    { 1, "Monday", 1, null, null, new TimeOnly(12, 0, 0), 0, new TimeOnly(9, 0, 0) },
+                    { 2, "Wednesday", 1, null, null, new TimeOnly(13, 0, 0), 0, new TimeOnly(10, 0, 0) },
+                    { 3, "Tuesday", 2, null, null, new TimeOnly(14, 0, 0), 0, new TimeOnly(11, 0, 0) },
+                    { 4, "Thursday", 2, null, null, new TimeOnly(12, 0, 0), 0, new TimeOnly(9, 0, 0) },
+                    { 5, "Friday", 1, null, null, new TimeOnly(12, 30, 0), 0, new TimeOnly(10, 0, 0) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -242,6 +247,12 @@ namespace ClinicBooking.DAL.Migrations
                 name: "IX_patients_UserId",
                 table: "patients",
                 column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_Email",
+                table: "users",
+                column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(

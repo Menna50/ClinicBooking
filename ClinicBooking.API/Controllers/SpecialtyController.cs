@@ -45,7 +45,7 @@ namespace ClinicBooking.API.Controllers
             return StatusCode(res.StatusCode, res.Error);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateSpecialtyDto dto)
         {
             var res = await _specialtyService.UpdateAsync(dto);

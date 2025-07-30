@@ -20,6 +20,7 @@ namespace ClinicBooking.API.Controllers
         private readonly IAuthService _authService;
         private readonly IValidator<RegisterRequestDto> _validator;
         private readonly IPatientService _patientService;
+        
         public AuthController(IPatientService patientService,IAuthService authService,IValidator<RegisterRequestDto> validator)
         {
             _authService = authService;
@@ -35,6 +36,14 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(res.StatusCode, res.Data);
             return StatusCode(res.StatusCode, res.Error);
         }
+        //[HttpPost]
+        //public async Task<IActionResult> addadmin(RegisterRequestDto request)
+        //{
+
+        //    _authService.RegisterAsync(request);
+        //    return Ok();
+
+        //}
         [HttpPost("register")]
 
         public async Task<IActionResult> Register(PatientRegisterRequestDto request)

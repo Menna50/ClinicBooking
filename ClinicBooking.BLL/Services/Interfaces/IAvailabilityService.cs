@@ -10,8 +10,8 @@ namespace ClinicBooking.BLL.Services.Interfaces
 {
     public interface IAvailabilityService
     {
-        public Task<ResultT<AvailabilityDto>> Add(AddAvailabilityRequestDto addAvailabilityRequestDto,int doctorId);
-        public Task<ResultT<List<AvailabilityDto>>> GetAllByDoctorId(int id);
+        public Task<ResultT<AvailabilityListDto>> Add(AddAvailabilityRequestDto addAvailabilityRequestDto,int doctorId);
+        public Task<ResultT<List<AvailabilityListDto>>> GetAllByDoctorId(int id);
         public Task<ResultT<AvailabilityDto>> GeById(int availabilityId, int doctorId);
 
         public Task<Result> UpdateAvailabilityAsync(int availabilityId, UpdateAvailabilityRequestDto dto, int doctorId);

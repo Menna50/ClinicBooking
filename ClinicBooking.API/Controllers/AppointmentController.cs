@@ -78,7 +78,7 @@ namespace ClinicBooking.API.Controllers
                 return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
             }
             var currentUserRoleClaim = User.FindFirst(ClaimTypes.Role);
-            if (currentUserRoleClaim == null || !Roles.TryParse(currentUserIdClaim.Value, out Roles currentUserRole))
+            if (currentUserRoleClaim == null || !Roles.TryParse(currentUserRoleClaim.Value, out Roles currentUserRole))
             {
                 return Unauthorized(new Error(AuthErrorCodes.InvalidToken, "User ID not found in token."));
             }
@@ -87,7 +87,7 @@ namespace ClinicBooking.API.Controllers
                 return StatusCode(result.StatusCode);
             return StatusCode(result.StatusCode, result.Error);
         }
-
+        
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromQuery] AppointmentStatus status)
