@@ -44,8 +44,6 @@ This project is a **demo/testing environment** showcasing the core functionaliti
 2. Set up the database (SQL Server)  
 3. Run migrations  
 4. Launch the project  
-5. Access Swagger UI at: `https://localhost:7000/swagger`  
-
 ---
 
 ## 📚 Full Technical Documentation  
