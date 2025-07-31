@@ -1,74 +1,64 @@
-🏥 Clinic Booking System
-A comprehensive clinic appointment booking platform designed to seamlessly connect patients and doctors. The system provides a robust API for managing doctor profiles, schedules, and appointment bookings, with full support for distinct user roles: Patient, Doctor, and Admin.
+# 🏥 Clinic Appointment Booking System
 
-✨ Key Features
-🔐 Authentication & Authorization
-Secure login/registration for both Patients and Doctors.
+A web-based system designed to simplify appointment scheduling between patients and doctors.  
+This project is a **demo/testing environment** showcasing the core functionalities of the system.
 
-JWT-based authentication for secure, stateless sessions.
+---
 
-Granular role-based access control (Admin, Doctor, Patient).
+## 🚀 Live Demo  
+🔗 [View Swagger API Documentation](http://clinicbooking.runasp.net/swagger/index.html)  
 
-👨‍⚕️ Doctor Management
-Admin-Only Doctor Creation: Only Admins can add doctors.
+> ⚠️ **Note:** The demo server is for **testing purposes only**.  
+> Default admin credentials are provided below and will **not** be used in production environments.
 
-Self-Service Profile Editing: Doctors can manage their profiles.
+---
 
-Public Profile Viewing: Doctor profiles are visible to all users.
+## 🔑 Testing Admin Credentials  
+- **Username:** `admin`  
+- **Password:** `12345678`  
 
-🩺 Specialty Management
-Admin Full Control: Admins can create, update, and delete medical specialties.
+---
 
-📅 Availability Scheduling
-Doctor-Managed Schedules: Doctors can define their availability (days, times, slot durations).
+## ✨ Main Features  
+- Secure Authentication (JWT-based)  
+- Role Management (Patient, Doctor, Admin)  
+- Appointment Booking and Cancellation  
+- Doctor Availability Management  
+- Specialty Management (CRUD)  
+- Advanced Error Handling and Logging  
+- RESTful API with Swagger documentation  
 
-Conflict Prevention: Overlap checks prevent scheduling conflicts.
+---
 
-🧑‍💼 Patient Management
-Self-Registration & Profile Editing: Patients can register and manage their own profiles.
+## 🛠️ Tech Stack  
+- **Backend:** ASP.NET Core Web API  
+- **Database:** SQL Server with Entity Framework Core  
+- **Authentication:** JWT  
+- **Logging:** Serilog  
+- **Documentation:** Swagger/OpenAPI  
 
-📆 Appointment Booking
-Step-by-Step Booking Flow:
+---
 
-Choose a specialty
+## 🧑‍💻 Getting Started (Local Development)  
+1. Clone the repository  
+2. Set up the database (SQL Server)  
+3. Run migrations  
+4. Launch the project  
+5. Access Swagger UI at: `https://localhost:7000/swagger`  
 
-Select a doctor
+---
 
-Pick from available slots
+## 📚 Full Technical Documentation  
+For a detailed technical guide (architecture, workflows, endpoints, and more),  
+please refer to the [Technical Documentation](docs/TECHNICAL_DOCUMENTATION.md).
 
-Flexible Cancellations:
+---
 
-Patients: Cancel their own bookings
-
-Doctors: Cancel their own appointments
-
-Admins: Cancel any appointment
-
-Status Management: Admins can update statuses (Confirmed, Completed, No-Show).
-
-Personalized Views:
-
-Patients: See all their appointments
-
-Doctors: See all scheduled appointments
-
-✅ Input Validation & Logging
-FluentValidation: Applied globally for consistent, strong input validation.
-
-Serilog: Logs all key actions and errors to console and files.
-
-🌐 Clean RESTful API
-Well-organized, scalable, and maintainable API structure.
-
-🛠️ Technologies Used
-Tech	Purpose
-.NET Core (ASP.NET API)	Backend framework
-Entity Framework Core	ORM for database interaction
-SQL Server	Relational database
-FluentValidation	Input validation
-Serilog	Logging
-AutoMapper	DTO and entity mapping
-JWT	Authentication & authorization
-Swagger/OpenAPI	API documentation & testing
-
-🔗 Live Demo: http://clinicbooking.runasp.net/swagger/index.html
+## 🔮 Future Enhancements  
+- Appointment Rescheduling  
+- Doctor Reviews and Ratings  
+- Notification System (Email/SMS)  
+- Admin Dashboard  
+- File Management System  
+- Payment Gateway Integration  
+- Dynamic Role Management
